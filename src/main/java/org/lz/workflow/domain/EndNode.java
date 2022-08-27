@@ -1,20 +1,27 @@
 package org.lz.workflow.domain;
 
-import org.lz.workflow.basic.RunningTask;
-import org.lz.workflow.basic.TaskType;
+import org.lz.workflow.basic.Node;
+import org.lz.workflow.basic.NodeType;
 
 /**
  * @author lz
  */
-public class UserTask implements RunningTask {
+public class EndNode implements Node {
     private Integer id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
-    private TaskType type;
+    private final NodeType type = NodeType.END;
     private Integer order;
     private String description;
-    private String flowId;
+
+    public NodeType getType() {
+        return type;
+    }
+
+    public Integer getId() {
+        return id;
+    }
 
     public void setId(Integer id) {
         this.id = id;
@@ -28,6 +35,10 @@ public class UserTask implements RunningTask {
         this.flowDesignId = flowDesignId;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -38,10 +49,6 @@ public class UserTask implements RunningTask {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
-    }
-
-    public void setType(TaskType type) {
-        this.type = type;
     }
 
     public Integer getOrder() {
@@ -58,25 +65,5 @@ public class UserTask implements RunningTask {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setFlowId(String flowId) {
-        this.flowId = flowId;
-    }
-
-    public String getFlowId() {
-        return this.flowId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public TaskType getType() {
-        return this.type;
     }
 }

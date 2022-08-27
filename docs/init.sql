@@ -29,6 +29,15 @@ create table `flow_node`
 ) engine = InnoDB
   default charset = utf8 comment '流程节点';
 
+create table `flow_common`
+(
+    `symbol` varchar(32) primary key not null comment '标识',
+    `value`  varchar(32)             not null comment '值'
+) engine = InnoDB
+  default charset = utf8 comment '流程公共信息';
+
+insert into `flow_common` values ('flow_id', '1');
+
 create table `flow_running`
 (
     `id`         bigint primary key auto_increment comment '流程id',

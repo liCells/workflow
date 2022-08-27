@@ -1,27 +1,20 @@
 package org.lz.workflow.domain;
 
-import org.lz.workflow.basic.Event;
-import org.lz.workflow.basic.EventType;
+import org.lz.workflow.basic.RunningTask;
+import org.lz.workflow.basic.TaskType;
 
 /**
  * @author lz
  */
-public class StartEvent implements Event {
+public class UserTaskNode implements RunningTask {
     private Integer id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
-    private final EventType type = EventType.START;
+    private TaskType type;
     private Integer order;
     private String description;
-
-    public EventType getType() {
-        return type;
-    }
-
-    public Integer getId() {
-        return id;
-    }
+    private String flowId;
 
     public void setId(Integer id) {
         this.id = id;
@@ -35,10 +28,6 @@ public class StartEvent implements Event {
         this.flowDesignId = flowDesignId;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -49,6 +38,10 @@ public class StartEvent implements Event {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    public void setType(TaskType type) {
+        this.type = type;
     }
 
     public Integer getOrder() {
@@ -65,5 +58,25 @@ public class StartEvent implements Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setFlowId(String flowId) {
+        this.flowId = flowId;
+    }
+
+    public String getFlowId() {
+        return this.flowId;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public TaskType getType() {
+        return this.type;
     }
 }

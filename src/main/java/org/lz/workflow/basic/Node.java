@@ -3,6 +3,6 @@ package org.lz.workflow.basic;
 /**
  * @author lz
  */
-public interface Event {
-    EventType getType();
+public interface Node {
+    NodeType getType();
 }

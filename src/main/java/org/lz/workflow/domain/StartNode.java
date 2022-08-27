@@ -1,21 +1,21 @@
 package org.lz.workflow.domain;
 
-import org.lz.workflow.basic.Event;
-import org.lz.workflow.basic.EventType;
+import org.lz.workflow.basic.Node;
+import org.lz.workflow.basic.NodeType;
 
 /**
  * @author lz
  */
-public class EndEvent implements Event {
+public class StartNode implements Node {
     private Integer id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
-    private final EventType type = EventType.END;
+    private final NodeType type = NodeType.START;
     private Integer order;
     private String description;
 
-    public EventType getType() {
+    public NodeType getType() {
         return type;
     }
 
