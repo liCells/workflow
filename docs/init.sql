@@ -19,13 +19,13 @@ create table `flow_details`
 
 create table `flow_node`
 (
-    `id`             varchar(32) primary key comment '节点id',
-    `flow_design_id` integer      not null comment '流程id',
-    `type`           varchar(32)  not null comment '节点类型',
-    `name`           varchar(60)  not null comment '节点名称',
-    `symbol`         varchar(32)  not null comment '节点标识',
-    `order`          integer      not null comment '节点顺序',
-    `description`    varchar(120) not null comment '节点描述'
+    `id`                 bigint primary key comment '节点id',
+    `flow_design_id`     integer      not null comment '流程设计id',
+    `flow_design_symbol` varchar(32)  not null comment '流程设计标识',
+    `type`               varchar(32)  not null comment '节点类型',
+    `name`               varchar(60)  not null comment '节点名称',
+    `symbol`             varchar(32)  not null comment '节点标识',
+    `description`        varchar(120) not null comment '节点描述'
 ) engine = InnoDB
   default charset = utf8 comment '流程节点';
 

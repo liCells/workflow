@@ -7,21 +7,20 @@ import org.lz.workflow.basic.TaskType;
  * @author lz
  */
 public class UserTaskNode implements RunningTask {
-    private String id;
+    private Long id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
     private TaskType type;
-    private Integer order;
     private String description;
     private String flowId;
 
     @Override
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -59,14 +58,6 @@ public class UserTaskNode implements RunningTask {
         this.type = type;
     }
 
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -84,13 +75,12 @@ public class UserTaskNode implements RunningTask {
         this.flowId = flowId;
     }
 
-    public UserTaskNode(String id, Integer flowDesignId, String name, String symbol, TaskType type, Integer order, String description, String flowId) {
+    public UserTaskNode(Long id, Integer flowDesignId, String name, String symbol, TaskType type, String description, String flowId) {
         this.id = id;
         this.flowDesignId = flowDesignId;
         this.name = name;
         this.symbol = symbol;
         this.type = type;
-        this.order = order;
         this.description = description;
         this.flowId = flowId;
     }

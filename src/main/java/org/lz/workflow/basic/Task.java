@@ -11,7 +11,7 @@ public interface Task {
     /**
      * @return task id
      */
-    String getId();
+    Long getId();
 
     /**
      * @return task type

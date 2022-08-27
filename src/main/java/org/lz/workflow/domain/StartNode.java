@@ -12,7 +12,6 @@ public class StartNode implements Node {
     private String name;
     private String symbol;
     private final NodeType type = NodeType.START;
-    private Integer order;
     private String description;
 
     public NodeType getType() {
@@ -49,14 +48,6 @@ public class StartNode implements Node {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
     }
 
     public String getDescription() {
