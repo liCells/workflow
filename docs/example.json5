@@ -1,0 +1,44 @@
+{
+    name: "flow name",
+    description: "flow description",
+    version: 1,
+    symbol: "example-flow",
+    flowDesignId: 1,
+    flowDesignSymbol: "Example-flow-symbol",
+    map: {
+        id: 1,
+        name: "Start node",
+        type: "Start",
+        symbol: "Start-node-symbol",
+        description: "Start node description",
+        go: [
+            {
+                id: 2,
+                name: "Line",
+                // Single-ended/Double-ended
+                type: "Single-ended",
+                symbol: "Single-ended-symbol",
+                default: true,
+                condition: "${CURRENT_DATE} == 0000-00-00",
+                description: "Line description",
+                go: {
+                    id: 3,
+                    name: "User Task",
+                    type: "USUAL/PARALLEL/SERIAL",
+                    symbol: "User-task-symbol",
+                    description: "User Task description",
+                    executor: "User Task executor/${CUSTOM_FIELD}",
+                    go: [
+                        {
+                            id: 4,
+                            name: "End node",
+                            type: "End",
+                            symbol: "End-node-symbol",
+                            description: "End node description",
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+}
