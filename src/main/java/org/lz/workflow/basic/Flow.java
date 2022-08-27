@@ -6,17 +6,21 @@ import java.time.LocalDate;
  * @author lz
  */
 public class Flow {
-    private Integer id;
+    private Long id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
     private LocalDate startTime;
 
-    public Integer getId() {
+    public Flow(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -51,4 +55,6 @@ public class Flow {
     public void setStartTime(LocalDate startTime) {
         this.startTime = startTime;
     }
+
+
 }
