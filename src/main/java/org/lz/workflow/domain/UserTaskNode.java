@@ -7,7 +7,7 @@ import org.lz.workflow.basic.TaskType;
  * @author lz
  */
 public class UserTaskNode implements RunningTask {
-    private Integer id;
+    private String id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
@@ -16,7 +16,12 @@ public class UserTaskNode implements RunningTask {
     private String description;
     private String flowId;
 
-    public void setId(Integer id) {
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -26,6 +31,11 @@ public class UserTaskNode implements RunningTask {
 
     public void setFlowDesignId(Integer flowDesignId) {
         this.flowDesignId = flowDesignId;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
@@ -38,6 +48,11 @@ public class UserTaskNode implements RunningTask {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    @Override
+    public TaskType getType() {
+        return type;
     }
 
     public void setType(TaskType type) {
@@ -60,23 +75,26 @@ public class UserTaskNode implements RunningTask {
         this.description = description;
     }
 
+    @Override
+    public String getFlowId() {
+        return flowId;
+    }
+
     public void setFlowId(String flowId) {
         this.flowId = flowId;
     }
 
-    public String getFlowId() {
-        return this.flowId;
+    public UserTaskNode(String id, Integer flowDesignId, String name, String symbol, TaskType type, Integer order, String description, String flowId) {
+        this.id = id;
+        this.flowDesignId = flowDesignId;
+        this.name = name;
+        this.symbol = symbol;
+        this.type = type;
+        this.order = order;
+        this.description = description;
+        this.flowId = flowId;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public TaskType getType() {
-        return this.type;
+    public UserTaskNode() {
     }
 }

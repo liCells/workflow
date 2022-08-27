@@ -19,7 +19,7 @@ create table `flow_details`
 
 create table `flow_node`
 (
-    `id`             integer primary key auto_increment comment '节点id',
+    `id`             varchar(32) primary key comment '节点id',
     `flow_design_id` integer      not null comment '流程id',
     `type`           varchar(32)  not null comment '节点类型',
     `name`           varchar(60)  not null comment '节点名称',
@@ -36,7 +36,8 @@ create table `flow_common`
 ) engine = InnoDB
   default charset = utf8 comment '流程公共信息';
 
-insert into `flow_common` values ('flow_id', '1');
+insert into `flow_common`
+values ('flow_id', '1');
 
 create table `flow_running`
 (
@@ -50,12 +51,14 @@ create table `flow_running`
 
 create table `flow_running_task`
 (
-    `id`              bigint primary key auto_increment comment '任务id',
-    `flow_running_id` bigint      not null comment '流程id',
-    `node_id`         bigint      not null comment '节点id',
-    `executor`        varchar(32) not null comment '执行者',
-    `start_time`      datetime    not null comment '开始时间',
-    `type`            varchar(10) not null comment '任务类型 USUAL/PARALLEL/SERIAL'
+    `id`          bigint primary key auto_increment comment '任务id',
+    `flow_id`     bigint      not null comment '流程id',
+    `node_id`     varchar(32) not null comment '节点id',
+    `name`        varchar(32) not null comment '节点名称',
+    `flow_symbol` varchar(32) not null comment '流程标志',
+    `executor`    varchar(32) not null comment '执行者',
+    `start_time`  datetime    not null comment '开始时间',
+    `type`        varchar(10) not null comment '任务类型 USUAL/PARALLEL/SERIAL'
 ) engine = InnoDB
   default charset = utf8 comment '流程任务';
 
