@@ -7,6 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
  *
  * @author lz
  */
-@ComponentScan("org.lz")
+@ComponentScan("org.lz.workflow")
 public class WorkflowConfig {
 }
