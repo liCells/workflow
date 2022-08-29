@@ -18,7 +18,7 @@
                 // Single-ended/Double-ended
                 type: "Single-ended",
                 symbol: "Single-ended-symbol",
-                default: true,
+                defaultSelected: true,
                 condition: "${CURRENT_DATE} == 0000-00-00",
                 description: "Line description",
                 go: {
