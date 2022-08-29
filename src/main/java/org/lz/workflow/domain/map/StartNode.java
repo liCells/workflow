@@ -1,18 +1,23 @@
-package org.lz.workflow.domain;
+package org.lz.workflow.domain.map;
 
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
+import org.lz.workflow.utils.StringUtil;
+
+import java.util.List;
 
 /**
  * @author lz
  */
-public class EndNode implements Node {
+public class StartNode implements Node {
     private Integer id;
     private Integer flowDesignId;
     private String name;
     private String symbol;
-    private final NodeType type = NodeType.END;
+    private final NodeType type = NodeType.START;
     private String description;
+
+    private List<Node> go;
 
     public NodeType getType() {
         return type;
@@ -56,5 +61,32 @@ public class EndNode implements Node {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Node> getGo() {
+        return go;
+    }
+
+    public void setGo(List<Node> go) {
+        this.go = go;
+    }
+
+    @Override
+    public void inspect() {
+        if (StringUtil.isEmpty(name)) {
+            this.name = "Start Node";
+        }
+        if (StringUtil.isEmpty(symbol)) {
+            this.symbol = StringUtil.getRandomString();
+        }
+        if (go == null || go.isEmpty()) {
+            throw new IllegalArgumentException("`go` is empty");
+        }
+        for (Node node : go) {
+            if (node.getType() == NodeType.SINGLE_ENDED && node.getType() == NodeType.DOUBLE_ENDED) {
+                throw new IllegalArgumentException("Start node's `go` is not single-ended or double-ended");
+            }
+            node.inspect();
+        }
     }
 }

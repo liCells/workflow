@@ -1,4 +1,4 @@
-package org.lz.workflow.domain;
+package org.lz.workflow.domain.map;
 
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
@@ -6,12 +6,11 @@ import org.lz.workflow.basic.NodeType;
 /**
  * @author lz
  */
-public class StartNode implements Node {
+public class EndNode implements Node {
     private Integer id;
-    private Integer flowDesignId;
     private String name;
     private String symbol;
-    private final NodeType type = NodeType.START;
+    private final NodeType type = NodeType.END;
     private String description;
 
     public NodeType getType() {
@@ -24,14 +23,6 @@ public class StartNode implements Node {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getFlowDesignId() {
-        return flowDesignId;
-    }
-
-    public void setFlowDesignId(Integer flowDesignId) {
-        this.flowDesignId = flowDesignId;
     }
 
     public String getName() {
@@ -56,5 +47,10 @@ public class StartNode implements Node {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public void inspect() {
+
     }
 }
