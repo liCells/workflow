@@ -45,7 +45,7 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
      */
     public void saveWorkflow(FlowDesign flowDesign) {
         if (flowDesign == null) {
-            throw new NullPointerException("flowDesign is null");
+            throw new NullPointerException("flowDesign is null.");
         }
         flowDesign.inspect();
 
@@ -65,7 +65,7 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
 
         int count = baseMapper.getCountBySymbolAndVersion(flowDesign.getSymbol(), flowDesign.getVersion());
         if (count != 0) {
-            throw new IllegalArgumentException("Symbol and version are already exists");
+            throw new IllegalArgumentException("Symbol and version are already exists.");
         }
 
         baseMapper.insert(flowDesign);
@@ -79,7 +79,7 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
      */
     public void inspectJson(Node map) {
         if (map == null) {
-            throw new IllegalArgumentException("The workflow json is null");
+            throw new IllegalArgumentException("The workflow json is null.");
         }
         if (map.getType() != NodeType.START) {
             throw new IllegalArgumentException("The workflow json must start with a start node.");

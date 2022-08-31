@@ -103,16 +103,16 @@ public class Line implements Node {
     @Override
     public void inspect() {
         if (StringUtil.isEmpty(name)) {
-            throw new IllegalArgumentException("name is empty");
+            throw new IllegalArgumentException("name is empty.");
         }
         if (StringUtil.isEmpty(symbol)) {
-            throw new IllegalArgumentException("symbol is empty");
+            throw new IllegalArgumentException("symbol is empty.");
         }
         if (StringUtil.isNotEmpty(condition)) {
             // TODO inspect condition
         }
         if (go == null) {
-            throw new IllegalArgumentException(String.format("{%s}'s go is null", name));
+            throw new IllegalArgumentException(String.format("{%s}'s go is null.", name));
         }
         // TODO inspect go type
         go.inspect();

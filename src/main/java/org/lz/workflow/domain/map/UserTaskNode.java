@@ -102,11 +102,11 @@ public class UserTaskNode implements Node {
             this.symbol = StringUtil.getRandomString();
         }
         if (go == null || go.isEmpty()) {
-            throw new IllegalArgumentException("go is empty");
+            throw new IllegalArgumentException("go is empty.");
         }
         for (Node node : go) {
             if (node.getType() == NodeType.SINGLE_ENDED && node.getType() == NodeType.DOUBLE_ENDED) {
-                throw new IllegalArgumentException("User task node's `go` is not single-ended or double-ended");
+                throw new IllegalArgumentException("User task node's `go` is not single-ended or double-ended.");
             }
             node.inspect();
         }

@@ -100,10 +100,10 @@ public class FlowDesign {
 
     public void inspect() {
         if (StringUtil.isEmpty(this.name)) {
-            throw new IllegalArgumentException("Name is empty");
+            throw new IllegalArgumentException("Name is empty.");
         }
         if (StringUtil.isEmpty(this.symbol)) {
-            throw new IllegalArgumentException("Symbol is empty");
+            throw new IllegalArgumentException("Symbol is empty.");
         }
     }
 }

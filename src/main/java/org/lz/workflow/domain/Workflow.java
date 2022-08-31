@@ -64,13 +64,13 @@ public class Workflow {
 
     public Workflow(String name, String description, Integer version, String symbol, String id, Node map) {
         if (StringUtil.isEmpty(id)) {
-            throw new IllegalArgumentException("id is empty");
+            throw new IllegalArgumentException("id is empty.");
         }
         if (StringUtil.isEmpty(name)) {
-            throw new IllegalArgumentException("name is empty");
+            throw new IllegalArgumentException("name is empty.");
         }
         if (StringUtil.isEmpty(symbol)) {
-            throw new IllegalArgumentException("symbol is empty");
+            throw new IllegalArgumentException("symbol is empty.");
         }
 
         this.id = id;
