@@ -11,8 +11,7 @@ public class Workflow {
     private String description;
     private Integer version;
     private String symbol;
-    private String flowDesignId;
-    private String flowDesignSymbol;
+    private String id;
     private Node map;
 
     public String getName() {
@@ -47,20 +46,12 @@ public class Workflow {
         this.symbol = symbol;
     }
 
-    public String getFlowDesignId() {
-        return flowDesignId;
+    public String getId() {
+        return id;
     }
 
-    public void setFlowDesignId(String flowDesignId) {
-        this.flowDesignId = flowDesignId;
-    }
-
-    public String getFlowDesignSymbol() {
-        return flowDesignSymbol;
-    }
-
-    public void setFlowDesignSymbol(String flowDesignSymbol) {
-        this.flowDesignSymbol = flowDesignSymbol;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Node getMap() {
@@ -71,25 +62,21 @@ public class Workflow {
         this.map = map;
     }
 
-    public Workflow(String name, String description, Integer version, String symbol, String flowDesignId, String flowDesignSymbol, Node map) {
+    public Workflow(String name, String description, Integer version, String symbol, String id, Node map) {
+        if (StringUtil.isEmpty(id)) {
+            throw new IllegalArgumentException("id is empty");
+        }
         if (StringUtil.isEmpty(name)) {
             throw new IllegalArgumentException("name is empty");
         }
         if (StringUtil.isEmpty(symbol)) {
             throw new IllegalArgumentException("symbol is empty");
         }
-        if (StringUtil.isEmpty(flowDesignSymbol)) {
-            throw new IllegalArgumentException("flowDesignSymbol is empty");
-        }
-        if (StringUtil.isEmpty(flowDesignId)) {
-            throw new IllegalArgumentException("flowDesignId is empty");
-        }
 
-        this.description = description;
-        this.version = version;
+        this.id = id;
         this.symbol = symbol;
-        this.flowDesignId = flowDesignId;
-        this.flowDesignSymbol = flowDesignSymbol;
+        this.version = version;
+        this.description = description;
         this.map = map;
     }
 }

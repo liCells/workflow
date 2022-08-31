@@ -53,4 +53,15 @@ public class EndNode implements Node {
     public void inspect() {
 
     }
+
+    @Override
+    public String toString() {
+        return '{' +
+                "\"id\":" + id +
+                ", \"name\":\"" + name + '"' +
+                ", \"symbol\":\"" + symbol + '"' +
+                ", \"type\":\"" + type + '"' +
+                ", \"description\":\"" + (description == null ? "" : description) + '"' +
+                '}';
+    }
 }

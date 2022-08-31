@@ -1,6 +1,9 @@
 package org.lz.workflow.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.lz.workflow.basic.Node;
+import org.lz.workflow.utils.StringUtil;
 
 /**
  * @author lz
@@ -10,8 +13,12 @@ public class FlowDesign {
     private Integer id;
     private String name;
     private String symbol;
-    private String version;
+    private Integer version;
     private String description;
+    private String simpleJson;
+    private String detailedJson;
+    @TableField(exist = false)
+    private Node map;
 
     public Integer getId() {
         return id;
@@ -37,11 +44,11 @@ public class FlowDesign {
         this.symbol = symbol;
     }
 
-    public String getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
@@ -53,14 +60,50 @@ public class FlowDesign {
         this.description = description;
     }
 
-    public FlowDesign(Integer id, String name, String symbol, String version, String description) {
+    public String getSimpleJson() {
+        return simpleJson;
+    }
+
+    public void setSimpleJson(String simpleJson) {
+        this.simpleJson = simpleJson;
+    }
+
+    public String getDetailedJson() {
+        return detailedJson;
+    }
+
+    public void setDetailedJson(String detailedJson) {
+        this.detailedJson = detailedJson;
+    }
+
+    public Node getMap() {
+        return map;
+    }
+
+    public void setMap(Node map) {
+        this.map = map;
+    }
+
+    public FlowDesign(Integer id, String name, String symbol, Integer version, String description, String simpleJson, String detailedJson, Node map) {
         this.id = id;
         this.name = name;
         this.symbol = symbol;
         this.version = version;
         this.description = description;
+        this.simpleJson = simpleJson;
+        this.detailedJson = detailedJson;
+        this.map = map;
     }
 
     public FlowDesign() {
+    }
+
+    public void inspect() {
+        if (StringUtil.isEmpty(this.name)) {
+            throw new IllegalArgumentException("Name is empty");
+        }
+        if (StringUtil.isEmpty(this.symbol)) {
+            throw new IllegalArgumentException("Symbol is empty");
+        }
     }
 }

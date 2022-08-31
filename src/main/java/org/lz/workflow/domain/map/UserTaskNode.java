@@ -111,4 +111,17 @@ public class UserTaskNode implements Node {
             node.inspect();
         }
     }
+
+    @Override
+    public String toString() {
+        return '{' +
+                "\"id\":" + id +
+                ", \"name\":\"" + name + '"' +
+                ", \"type\":\"" + type + '"' +
+                ", \"symbol\":\"" + symbol + '"' +
+                ", \"description\":\"" + description + '"' +
+                ", \"executor\":\"" + executor + '"' +
+                ", \"go\":" + go +
+                '}';
+    }
 }

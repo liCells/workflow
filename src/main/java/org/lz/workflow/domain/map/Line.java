@@ -78,6 +78,14 @@ public class Line implements Node {
         this.description = description;
     }
 
+    public Node getGo() {
+        return go;
+    }
+
+    public void setGo(Node go) {
+        this.go = go;
+    }
+
     public Line(Integer id, String name, NodeType type, String symbol, boolean defaultSelected, String condition, String description, Node go) {
         this.id = id;
         this.name = name;
@@ -108,5 +116,19 @@ public class Line implements Node {
         }
         // TODO inspect go type
         go.inspect();
+    }
+
+    @Override
+    public String toString() {
+        return '{' +
+                "\"id\":" + id +
+                ", \"name\":\"" + name + '"' +
+                ", \"type\":\"" + type + '"' +
+                ", \"symbol\":\"" + symbol + '"' +
+                ", \"defaultSelected\":" + defaultSelected +
+                ", \"condition\":\"" + (condition == null ? "" : condition) + '"' +
+                ", \"description\":\"" + (description == null ? "" : description) + '"' +
+                ", \"go\":" + go +
+                '}';
     }
 }

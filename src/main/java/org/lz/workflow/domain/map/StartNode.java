@@ -89,4 +89,29 @@ public class StartNode implements Node {
             node.inspect();
         }
     }
+
+    public StartNode(Integer id, Integer flowDesignId, String name, String symbol, String description, List<Node> go) {
+        this.id = id;
+        this.flowDesignId = flowDesignId;
+        this.name = name;
+        this.symbol = symbol;
+        this.description = description;
+        this.go = go;
+    }
+
+    public StartNode() {
+    }
+
+    @Override
+    public String toString() {
+        return '{' +
+                "\"id\":" + id +
+                ", \"flowDesignId\":" + flowDesignId +
+                ", \"name\":\"" + name + '"' +
+                ", \"symbol\":\"" + symbol + '"' +
+                ", \"type\":\"" + type + '"' +
+                ", \"description\":\"" + (description == null ? "" : description) + '"' +
+                ", \"go\":" + go +
+                '}';
+    }
 }
