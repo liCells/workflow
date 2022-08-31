@@ -4,4 +4,10 @@
     <select id="getBySymbol" resultType="org.lz.workflow.domain.FlowDesign">
         select * from flow_design where symbol = #{symbol} order by version desc limit 1
     </select>
+
+    <select id="getCountBySymbolAndVersion" resultType="java.lang.Integer">
+        select count(*)
+        from flow_design
+        where symbol = #{symbol} and version = #{version} limit 1
+    </select>
 </mapper>
