@@ -7,6 +7,7 @@ import org.lz.workflow.domain.FlowDesign;
 import org.lz.workflow.mapper.FlowDesignMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,6 +15,10 @@ import java.util.Objects;
  */
 @Service
 public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign> {
+
+    public List<FlowDesign> selectAll() {
+        return baseMapper.selectList(null);
+    }
 
     /**
      * Returns the latest version of flowDesign to which the symbol is mapped.
