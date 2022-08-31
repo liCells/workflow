@@ -1,10 +1,9 @@
 {
+    id: 1,
     name: "flow name",
     description: "flow description",
     version: 1,
     symbol: "example-flow",
-    flowDesignId: 1,
-    flowDesignSymbol: "Example-flow-symbol",
     map: {
         id: 1,
         name: "Start node",

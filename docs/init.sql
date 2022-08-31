@@ -1,21 +1,14 @@
 create table `flow_design`
 (
-    `id`          integer primary key auto_increment,
-    `name`        varchar(60)  not null comment '名称',
-    `symbol`      varchar(32)  not null comment '标识',
-    `version`     integer      not null comment '版本',
-    `description` varchar(120) not null comment '描述'
+    `id`            integer primary key auto_increment,
+    `name`          varchar(60)  not null comment '名称',
+    `symbol`        varchar(32)  not null comment '标识',
+    `version`       integer      not null comment '版本',
+    `description`   varchar(120) not null comment '描述',
+    `simple_json`   text         not null comment '简单的流程json',
+    `detailed_json` text         not null comment '完整的流程json'
 ) engine = InnoDB
   default charset = utf8 comment '流程';
-
-create table `flow_details`
-(
-    `id`             integer primary key auto_increment,
-    `flow_design_id` integer not null comment '流程id',
-    `simple_json`    text    not null comment '简单的流程json',
-    `detailed_json`  text    not null comment '完整的流程json'
-) engine = InnoDB
-  default charset = utf8 comment '流程详细设计';
 
 create table `flow_node`
 (
