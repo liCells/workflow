@@ -8,12 +8,15 @@ import java.time.LocalDate;
 public class Flow {
     private Long id;
     private Integer flowDesignId;
+    private Integer version;
     private String name;
     private String symbol;
     private LocalDate startTime;
+    private FlowState state;
 
-    public Flow(String symbol) {
+    public Flow(String symbol, Integer version) {
         this.symbol = symbol;
+        this.version = version;
     }
 
     public Long getId() {
@@ -30,6 +33,14 @@ public class Flow {
 
     public void setFlowDesignId(Integer flowDesignId) {
         this.flowDesignId = flowDesignId;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public String getName() {
@@ -56,5 +67,11 @@ public class Flow {
         this.startTime = startTime;
     }
 
+    public FlowState getState() {
+        return state;
+    }
 
+    public void setState(FlowState state) {
+        this.state = state;
+    }
 }

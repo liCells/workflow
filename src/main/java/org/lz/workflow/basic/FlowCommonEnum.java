@@ -4,7 +4,9 @@ package org.lz.workflow.basic;
  * @author lz
  */
 public enum FlowCommonEnum {
-    FLOW_KEY("flow_id");
+    FLOW_KEY("flow_id"),
+    TASK_KEY("task_id"),
+    ;
     private final String symbol;
 
     FlowCommonEnum(String symbol) {

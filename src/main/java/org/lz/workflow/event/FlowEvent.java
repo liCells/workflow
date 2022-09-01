@@ -7,4 +7,6 @@ public interface FlowEvent {
     Long getFlowId();
 
     String getFlowSymbol();
+
+    Integer getFlowVersion();
 }
