@@ -2,6 +2,7 @@ package org.lz.workflow.domain.map;
 
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
+import org.lz.workflow.basic.TaskNode;
 import org.lz.workflow.utils.StringUtil;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * @author lz
  */
-public class UserTaskNode implements Node {
+public class UserTaskNode implements TaskNode {
     private Integer id;
     private String name;
     private NodeType type;
@@ -123,5 +124,10 @@ public class UserTaskNode implements Node {
                 ", \"executor\":\"" + executor + '"' +
                 ", \"go\":" + go +
                 '}';
+    }
+
+    @Override
+    public Node getNextTaskNode() {
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package org.lz.workflow.domain.map;
 
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
+import org.lz.workflow.basic.TaskNode;
 import org.lz.workflow.utils.StringUtil;
 
 import java.util.List;
@@ -113,5 +114,15 @@ public class StartNode implements Node {
                 ", \"description\":\"" + (description == null ? "" : description) + '"' +
                 ", \"go\":" + go +
                 '}';
+    }
+
+    @Override
+    public Node getNextTaskNode() {
+        for (Node node : go) {
+            if (node instanceof TaskNode) {
+                return node;
+            }
+        }
+        throw new IllegalArgumentException("Not found the next task node.");
     }
 }

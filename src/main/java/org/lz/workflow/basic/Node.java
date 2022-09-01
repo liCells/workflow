@@ -14,4 +14,6 @@ public interface Node {
     String getDescription();
 
     void inspect();
+
+    Node getNextTaskNode();
 }

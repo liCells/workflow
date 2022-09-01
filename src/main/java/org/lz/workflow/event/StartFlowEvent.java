@@ -21,4 +21,8 @@ public class StartFlowEvent implements FlowEvent {
     public StartFlowEvent(Flow flow) {
         this.flow = flow;
     }
+
+    public Integer getFlowVersion() {
+        return flow.getVersion();
+    }
 }
