@@ -6,6 +6,7 @@ import org.lz.workflow.domain.FlowDesign;
 import org.lz.workflow.event.EventPublisher;
 import org.lz.workflow.event.StartFlowEvent;
 import org.lz.workflow.mapper.FlowMapper;
+import org.lz.workflow.utils.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +18,13 @@ import java.time.LocalDate;
  * @author lz
  */
 @Service
-public class FlowService {
+public class FlowService extends FlowCommonService {
 
-    private final FlowCommonService flowCommonService;
     private final FlowDesignService flowDesignService;
     private final EventPublisher eventPublisher;
     private final FlowMapper flowMapper;
 
-    public FlowService(FlowCommonService flowCommonService, FlowDesignService flowDesignService, EventPublisher eventPublisher, FlowMapper flowMapper) {
-        this.flowCommonService = flowCommonService;
+    public FlowService(FlowDesignService flowDesignService, EventPublisher eventPublisher, FlowMapper flowMapper) {
         this.flowDesignService = flowDesignService;
         this.eventPublisher = eventPublisher;
         this.flowMapper = flowMapper;
@@ -33,7 +32,26 @@ public class FlowService {
 
     @Transactional
     public Flow startFlow(String symbol) {
-        return startFlow(new Flow(symbol));
+        if (StringUtil.isEmpty(symbol)) {
+            throw new IllegalArgumentException("symbol is empty.");
+        }
+        FlowDesign flowDesign = flowDesignService.getBySymbol(symbol);
+        return startFlow(new Flow(symbol, flowDesign.getVersion()));
+    }
+
+    @Transactional
+    public Flow startFlow(String symbol, Integer version) {
+        if (StringUtil.isEmpty(symbol)) {
+            throw new IllegalArgumentException("symbol is empty.");
+        }
+        if (version == null || version < 1) {
+            throw new IllegalArgumentException("version is empty.");
+        }
+        int count = flowDesignService.getCountBySymbolAndVersion(symbol, version);
+        if (count == 0) {
+            throw new IllegalArgumentException("symbol is not exists.");
+        }
+        return startFlow(new Flow(symbol, version));
     }
 
     /**
@@ -46,7 +64,7 @@ public class FlowService {
      */
     private Flow startFlow(Flow flow) {
         // Get flow id.
-        Long id = flowCommonService.getIdAndIncr(FlowCommonEnum.FLOW_KEY);
+        Long id = getIdAndIncr(FlowCommonEnum.FLOW_KEY);
         flow.setId(id);
         // Get flow design.
         FlowDesign flowDesign = flowDesignService.getBySymbol(flow.getSymbol());
@@ -66,14 +84,14 @@ public class FlowService {
 
     public Flow deleteFlow(String flowId) {
         // TODO delete from database.
-        // delete data of flow_running & flow_history
+        // delete data of flow_running & flow_history & flow_running_task & flow_history_task
         return null;
     }
 
     public Flow destroyFlow(String flowId) {
         // TODO delete and update data from database.
-        // 1. delete data of flow_running
-        // 2. update data of flow_history
+        // 1. delete data of flow_running & flow_running_task
+        // 2. update data of flow_history & flow_history_task
         return null;
     }
 

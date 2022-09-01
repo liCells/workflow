@@ -27,6 +27,9 @@ public class FlowCommonService extends ServiceImpl<FlowCommonMapper, FlowCommon>
 
         FlowCommon common = getById(flowCommon.getSymbol());
         String value = common.getValue();
+        if (value == null) {
+            value = "0";
+        }
         long id = Long.parseLong(value);
         common.setValue(String.valueOf(id + 1));
         updateById(common);

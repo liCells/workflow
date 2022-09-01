@@ -63,12 +63,16 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
             return;
         }
 
-        int count = baseMapper.getCountBySymbolAndVersion(flowDesign.getSymbol(), flowDesign.getVersion());
+        int count = getCountBySymbolAndVersion(flowDesign.getSymbol(), flowDesign.getVersion());
         if (count != 0) {
             throw new IllegalArgumentException("Symbol and version are already exists.");
         }
 
         baseMapper.insert(flowDesign);
+    }
+
+    public int getCountBySymbolAndVersion(String symbol, Integer version) {
+        return baseMapper.getCountBySymbolAndVersion(symbol, version);
     }
 
     /**
@@ -77,7 +81,7 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
      * @param map the map reference to inspect workflow structure.
      * @throws IllegalArgumentException if the workflow structure is null or illegal.
      */
-    public void inspectJson(Node map) {
+    private void inspectJson(Node map) {
         if (map == null) {
             throw new IllegalArgumentException("The workflow json is null.");
         }
