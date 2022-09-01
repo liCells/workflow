@@ -30,11 +30,13 @@ create table `flow_common`
   default charset = utf8 comment '流程公共信息';
 
 insert into `flow_common`
-values ('flow_id', '1');
+values ('flow_id', '0');
+insert into `flow_common`
+values ('task_id', '0');
 
 create table `flow_running`
 (
-    `id`         bigint primary key auto_increment comment '流程id',
+    `id`         bigint primary key comment '流程id',
     `name`       varchar(60) not null comment '流程名称',
     `symbol`     varchar(60) not null comment '流程标识',
     `start_time` datetime    not null comment '开始时间',
@@ -44,9 +46,9 @@ create table `flow_running`
 
 create table `flow_running_task`
 (
-    `id`          bigint primary key auto_increment comment '任务id',
+    `id`          bigint primary key comment '任务id',
     `flow_id`     bigint      not null comment '流程id',
-    `node_id`     varchar(32) not null comment '节点id',
+    `node_symbol` varchar(32) not null comment '节点标识',
     `name`        varchar(32) not null comment '节点名称',
     `flow_symbol` varchar(32) not null comment '流程标志',
     `executor`    varchar(32) not null comment '执行者',
@@ -57,21 +59,21 @@ create table `flow_running_task`
 
 create table `flow_history`
 (
-    `id`         bigint primary key auto_increment comment '流程id',
+    `id`         bigint primary key comment '流程id',
     `name`       varchar(60) not null comment '流程名称',
     `symbol`     varchar(60) not null comment '流程标识',
     `start_time` datetime    not null comment '开始时间',
     `end_time`   datetime    not null comment '结束时间',
-    `state`      datetime    not null comment '状态 RUNNING/SUCCESS/DESTROY',
+    `state`      datetime    not null comment '状态 RUNNING/FINISHED/DESTROYED',
     `executor`   varchar(32) not null comment '执行者'
 ) engine = InnoDB
   default charset = utf8 comment '流程历史';
 
 create table `flow_history_task`
 (
-    `id`              bigint primary key auto_increment comment '任务id',
+    `id`              bigint primary key comment '任务id',
     `flow_running_id` bigint      not null comment '流程id',
-    `node_id`         bigint      not null comment '节点id',
+    `node_symbol`     varchar(32) not null comment '节点标识',
     `executor`        varchar(32) not null comment '执行者',
     `start_time`      datetime    not null comment '开始时间',
     `end_time`        datetime    not null comment '结束时间',
