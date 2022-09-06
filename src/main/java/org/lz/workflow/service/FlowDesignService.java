@@ -2,7 +2,6 @@ package org.lz.workflow.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.lz.workflow.basic.Node;
-import org.lz.workflow.basic.NodeType;
 import org.lz.workflow.domain.FlowDesign;
 import org.lz.workflow.mapper.FlowDesignMapper;
 import org.springframework.stereotype.Service;
@@ -81,14 +80,13 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
      * @param map the map reference to inspect workflow structure.
      * @throws IllegalArgumentException if the workflow structure is null or illegal.
      */
-    private void inspectJson(Node map) {
+    private void inspectJson(List<Node> map) {
         if (map == null) {
             throw new IllegalArgumentException("The workflow json is null.");
         }
-        if (map.getType() != NodeType.START) {
-            throw new IllegalArgumentException("The workflow json must start with a start node.");
+        for (Node node : map) {
+            node.inspect();
         }
-        map.inspect();
     }
 
 }

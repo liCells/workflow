@@ -17,7 +17,7 @@ public class UserTaskNode implements TaskNode {
     private String symbol;
     private String description;
     private String executor;
-    private List<Node> go;
+    private List<String> go;
 
     @Override
     public Integer getId() {
@@ -73,15 +73,15 @@ public class UserTaskNode implements TaskNode {
         this.executor = executor;
     }
 
-    public List<Node> getGo() {
+    public List<String> getGo() {
         return go;
     }
 
-    public void setGo(List<Node> go) {
+    public void setGo(List<String> go) {
         this.go = go;
     }
 
-    public UserTaskNode(Integer id, String name, NodeType type, String symbol, String description, String executor, List<Node> go) {
+    public UserTaskNode(Integer id, String name, NodeType type, String symbol, String description, String executor, List<String> go) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -105,12 +105,6 @@ public class UserTaskNode implements TaskNode {
         if (go == null || go.isEmpty()) {
             throw new IllegalArgumentException("go is empty.");
         }
-        for (Node node : go) {
-            if (node.getType() == NodeType.SINGLE_ENDED && node.getType() == NodeType.DOUBLE_ENDED) {
-                throw new IllegalArgumentException("User task node's `go` is not single-ended or double-ended.");
-            }
-            node.inspect();
-        }
     }
 
     @Override
@@ -127,7 +121,12 @@ public class UserTaskNode implements TaskNode {
     }
 
     @Override
-    public Node getNextTaskNode() {
+    public List<Node> getNextTaskNode() {
+        return null;
+    }
+
+    @Override
+    public List<Node> getNextNode() {
         return null;
     }
 }

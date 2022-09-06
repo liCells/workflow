@@ -3,6 +3,8 @@ package org.lz.workflow.domain.map;
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
 
+import java.util.List;
+
 /**
  * @author lz
  */
@@ -52,6 +54,16 @@ public class EndNode implements Node {
     @Override
     public void inspect() {
 
+    }
+
+    @Override
+    public List<Node> getNextTaskNode() {
+        throw new UnsupportedOperationException("EndNode has no next task node");
+    }
+
+    @Override
+    public List<Node> getNextNode() {
+        throw new UnsupportedOperationException("EndNode has no next node");
     }
 
     @Override

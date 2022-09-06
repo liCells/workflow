@@ -1,5 +1,7 @@
 package org.lz.workflow.basic;
 
+import java.util.List;
+
 /**
  * @author lz
  */
@@ -15,5 +17,7 @@ public interface Node {
 
     void inspect();
 
-    Node getNextTaskNode();
+    List<Node> getNextTaskNode();
+
+    List<Node> getNextNode();
 }

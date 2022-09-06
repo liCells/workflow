@@ -2,7 +2,6 @@ package org.lz.workflow.domain.map;
 
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
-import org.lz.workflow.basic.TaskNode;
 import org.lz.workflow.utils.StringUtil;
 
 import java.util.List;
@@ -17,8 +16,7 @@ public class StartNode implements Node {
     private String symbol;
     private final NodeType type = NodeType.START;
     private String description;
-
-    private List<Node> go;
+    private List<String> go;
 
     public NodeType getType() {
         return type;
@@ -64,11 +62,11 @@ public class StartNode implements Node {
         this.description = description;
     }
 
-    public List<Node> getGo() {
+    public List<String> getGo() {
         return go;
     }
 
-    public void setGo(List<Node> go) {
+    public void setGo(List<String> go) {
         this.go = go;
     }
 
@@ -83,15 +81,9 @@ public class StartNode implements Node {
         if (go == null || go.isEmpty()) {
             throw new IllegalArgumentException("`go` is empty.");
         }
-        for (Node node : go) {
-            if (node.getType() == NodeType.SINGLE_ENDED && node.getType() == NodeType.DOUBLE_ENDED) {
-                throw new IllegalArgumentException("Start node's `go` is not single-ended or double-ended.");
-            }
-            node.inspect();
-        }
     }
 
-    public StartNode(Integer id, Integer flowDesignId, String name, String symbol, String description, List<Node> go) {
+    public StartNode(Integer id, Integer flowDesignId, String name, String symbol, String description, List<String> go) {
         this.id = id;
         this.flowDesignId = flowDesignId;
         this.name = name;
@@ -117,12 +109,16 @@ public class StartNode implements Node {
     }
 
     @Override
-    public Node getNextTaskNode() {
-        for (Node node : go) {
-            if (node instanceof TaskNode) {
-                return node;
-            }
+    public List<Node> getNextTaskNode() {
+        for (String node : go) {
+            // TODO get next task node in NodeMap
         }
         throw new IllegalArgumentException("Not found the next task node.");
+    }
+
+    @Override
+    public List<Node> getNextNode() {
+        // TODO get next node in NodeMap
+        return null;
     }
 }

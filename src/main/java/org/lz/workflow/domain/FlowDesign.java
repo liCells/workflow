@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.utils.StringUtil;
 
+import java.util.List;
+
 /**
  * @author lz
  */
@@ -18,7 +20,7 @@ public class FlowDesign {
     private String simpleJson;
     private String detailedJson;
     @TableField(exist = false)
-    private Node map;
+    private List<Node> map;
 
     public Integer getId() {
         return id;
@@ -76,15 +78,15 @@ public class FlowDesign {
         this.detailedJson = detailedJson;
     }
 
-    public Node getMap() {
+    public List<Node> getMap() {
         return map;
     }
 
-    public void setMap(Node map) {
+    public void setMap(List<Node> map) {
         this.map = map;
     }
 
-    public FlowDesign(Integer id, String name, String symbol, Integer version, String description, String simpleJson, String detailedJson, Node map) {
+    public FlowDesign(Integer id, String name, String symbol, Integer version, String description, String simpleJson, String detailedJson, List<Node> map) {
         this.id = id;
         this.name = name;
         this.symbol = symbol;

@@ -4,6 +4,8 @@ import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
 import org.lz.workflow.utils.StringUtil;
 
+import java.util.List;
+
 /**
  * @author lz
  */
@@ -15,7 +17,7 @@ public class Line implements Node {
     private boolean defaultSelected;
     private String condition;
     private String description;
-    private Node go;
+    private String go;
 
     @Override
     public Integer getId() {
@@ -78,15 +80,15 @@ public class Line implements Node {
         this.description = description;
     }
 
-    public Node getGo() {
+    public String getGo() {
         return go;
     }
 
-    public void setGo(Node go) {
+    public void setGo(String go) {
         this.go = go;
     }
 
-    public Line(Integer id, String name, NodeType type, String symbol, boolean defaultSelected, String condition, String description, Node go) {
+    public Line(Integer id, String name, NodeType type, String symbol, boolean defaultSelected, String condition, String description, String go) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -114,8 +116,18 @@ public class Line implements Node {
         if (go == null) {
             throw new IllegalArgumentException(String.format("{%s}'s go is null.", name));
         }
-        // TODO inspect go type
-        go.inspect();
+    }
+
+    @Override
+    public List<Node> getNextTaskNode() {
+        // TODO get next task node in NodeMap
+        return null;
+    }
+
+    @Override
+    public List<Node> getNextNode() {
+        // TODO get next node in NodeMap
+        return null;
     }
 
     @Override
