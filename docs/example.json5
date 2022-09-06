@@ -4,40 +4,55 @@
     description: "flow description",
     version: 1,
     symbol: "example-flow",
-    map: {
-        id: 1,
-        name: "Start node",
-        type: "Start",
-        symbol: "Start-node-symbol",
-        description: "Start node description",
-        go: [
-            {
-                id: 2,
-                name: "Line",
-                // Single-ended/Double-ended
-                type: "Single-ended",
-                symbol: "Single-ended-symbol",
-                defaultSelected: true,
-                condition: "${CURRENT_DATE} == 0000-00-00",
-                description: "Line description",
-                go: {
-                    id: 3,
-                    name: "User Task",
-                    type: "USUAL/PARALLEL/SERIAL",
-                    symbol: "User-task-symbol",
-                    description: "User Task description",
-                    executor: "User Task executor/${CUSTOM_FIELD}",
-                    go: [
-                        {
-                            id: 4,
-                            name: "End node",
-                            type: "End",
-                            symbol: "End-node-symbol",
-                            description: "End node description",
-                        }
-                    ]
-                }
-            }
-        ]
-    },
+    map: [
+        {
+            id: 1,
+            name: "Start node",
+            type: "Start",
+            symbol: "Start-node-symbol",
+            description: "Start node description",
+            go: [
+                "Single-ended-symbol"
+            ],
+        },
+        {
+            id: 2,
+            name: "Line",
+            // Single-ended/Double-ended
+            type: "Single-ended",
+            symbol: "Single-ended-symbol",
+            defaultSelected: true,
+            condition: "${CURRENT_DATE} == 0000-00-00",
+            description: "Line description",
+            go: "User-task-symbol"
+        },
+        {
+            id: 3,
+            name: "User Task",
+            type: "USUAL/PARALLEL/SERIAL",
+            symbol: "User-task-symbol",
+            description: "User Task description",
+            executor: "User Task executor/${CUSTOM_FIELD}",
+            go: [
+                "Single-ended-symbol-two"
+            ]
+        },
+        {
+            id: 4,
+            name: "Line",
+            type: "Single-ended",
+            symbol: "Single-ended-symbol-two",
+            defaultSelected: true,
+            condition: "${CURRENT_DATE} == 0000-00-00",
+            description: "Line description",
+            go: "End-node-symbol"
+        },
+        {
+            id: 5,
+            name: "End node",
+            type: "End",
+            symbol: "End-node-symbol",
+            description: "End node description",
+        }
+    ]
 }
