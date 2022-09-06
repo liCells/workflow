@@ -2,7 +2,6 @@ package org.lz.workflow.helper;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
@@ -14,7 +13,7 @@ import org.lz.workflow.domain.map.StartNode;
 import org.lz.workflow.domain.map.UserTaskNode;
 import org.lz.workflow.service.FlowDesignService;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,76 +33,49 @@ public class LoadNodeMapHelper {
             return;
         }
         for (FlowDesign flowDesign : flowDesigns) {
-            JsonObject jsonObject = gson.fromJson(flowDesign.getSimpleJson(), JsonObject.class);
-            Node nodeMap = build(jsonObject);
+            JsonArray jsonElements = gson.fromJson(flowDesign.getSimpleJson(), JsonArray.class);
+            HashMap<String, Node> nodeMap = build(jsonElements);
             NodeMap.put(flowDesign.getSymbol(), flowDesign.getVersion(), nodeMap);
         }
     }
 
-    public static Node build(JsonObject json) {
-        JsonElement type = json.get("type");
-        if (NodeType.START.getName().equals(type.getAsString())) {
-            return parse(json);
-        } else {
-            throw new IllegalArgumentException("The wrong workflow json.");
-        }
+    public static HashMap<String, Node> build(JsonArray json) {
+        HashMap<String, Node> nodeMap =  new HashMap<>();
+        json.forEach(node -> {
+            Node obj = parse(node.getAsJsonObject());
+            nodeMap.put(obj.getSymbol(), obj);
+        });
+        return nodeMap;
     }
 
-    public static Node parse(JsonElement json) {
-        JsonObject jsonObj = json.getAsJsonObject();
-        String type = jsonObj.get("type").getAsString();
+    public static Node parse(JsonObject json) {
+        String type = json.get("type").getAsString();
         switch (NodeType.getByValue(type)) {
             case START: {
-                JsonArray go = jsonObj.get("go").getAsJsonArray();
-                jsonObj.remove("go");
-                StartNode startNode = gson.fromJson(jsonObj, StartNode.class);
-                List<Node> nodes = new ArrayList<>();
-                for (JsonElement element : go) {
-                    nodes.add(parse(element));
-                }
-                startNode.setGo(nodes);
-                return startNode;
+                return gson.fromJson(json, StartNode.class);
             }
             case END: {
-                return gson.fromJson(jsonObj, EndNode.class);
+                return gson.fromJson(json, EndNode.class);
             }
             case USUAL_TASK: {
-                JsonArray go = jsonObj.get("go").getAsJsonArray();
-                jsonObj.remove("go");
-                UserTaskNode userTaskNode = gson.fromJson(jsonObj, UserTaskNode.class);
-                List<Node> nodes = new ArrayList<>();
-                for (JsonElement element : go) {
-                    nodes.add(parse(element));
-                }
-                userTaskNode.setGo(nodes);
-                return userTaskNode;
+                return gson.fromJson(json, UserTaskNode.class);
+            }
+            case SINGLE_ENDED: {
+                return gson.fromJson(json, Line.class);
             }
             case PARALLEL_TASK:
                 // TODO
-                break;
             case SERIAL_TASK:
                 // TODO
-                break;
-            case SINGLE_ENDED: {
-                JsonObject go = jsonObj.get("go").getAsJsonObject();
-                jsonObj.remove("go");
-                Line line = gson.fromJson(jsonObj, Line.class);
-                line.setGo(parse(go));
-                return line;
-            }
             case DOUBLE_ENDED:
                 // TODO
-                break;
             case AUTO_TASK:
                 // TODO
-                break;
             case TIMER_TASK:
                 // TODO
-                break;
             default:
-                throw new IllegalArgumentException("The wrong workflow json.");
+                throw new IllegalArgumentException("The wrong json.");
         }
-        return null;
     }
 
 }
