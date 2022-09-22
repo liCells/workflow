@@ -18,21 +18,21 @@ public class FlowCommonService extends ServiceImpl<FlowCommonMapper, FlowCommon>
     /**
      * Get new id by symbol.
      *
-     * @param flowCommon 流程公共参数枚举
+     * @param flowCommonEnum 流程公共参数枚举
      * @return new id
      */
     @Transactional
-    public Long getIdAndIncr(FlowCommonEnum flowCommon) {
-        Objects.requireNonNull(flowCommon);
+    public Long getIdAndIncr(FlowCommonEnum flowCommonEnum) {
+        Objects.requireNonNull(flowCommonEnum);
 
-        FlowCommon common = getById(flowCommon.getSymbol());
-        String value = common.getValue();
+        FlowCommon flowCommon = getById(flowCommonEnum.getSymbol());
+        String value = flowCommon.getValue();
         if (value == null) {
             value = "0";
         }
         long id = Long.parseLong(value);
-        common.setValue(String.valueOf(id + 1));
-        updateById(common);
+        flowCommon.setValue(String.valueOf(id + 1));
+        updateById(flowCommon);
         return id;
     }
 }

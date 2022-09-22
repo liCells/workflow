@@ -40,9 +40,12 @@ public class LoadNodeMapHelper {
     }
 
     public static HashMap<String, Node> build(JsonArray json) {
-        HashMap<String, Node> nodeMap =  new HashMap<>();
+        HashMap<String, Node> nodeMap = new HashMap<>();
         json.forEach(node -> {
             Node obj = parse(node.getAsJsonObject());
+            if (obj instanceof StartNode) {
+                nodeMap.put(NodeType.START.getName(), obj);
+            }
             nodeMap.put(obj.getSymbol(), obj);
         });
         return nodeMap;
