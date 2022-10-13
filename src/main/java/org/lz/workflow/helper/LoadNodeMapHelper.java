@@ -34,15 +34,16 @@ public class LoadNodeMapHelper {
         }
         for (FlowDesign flowDesign : flowDesigns) {
             JsonArray jsonElements = gson.fromJson(flowDesign.getSimpleJson(), JsonArray.class);
-            HashMap<String, Node> nodeMap = build(jsonElements);
+            HashMap<String, Node> nodeMap = build(jsonElements, flowDesign);
             NodeMap.put(flowDesign.getSymbol(), flowDesign.getVersion(), nodeMap);
         }
     }
 
-    public static HashMap<String, Node> build(JsonArray json) {
+    public static HashMap<String, Node> build(JsonArray json, FlowDesign flowDesign) {
         HashMap<String, Node> nodeMap = new HashMap<>();
         json.forEach(node -> {
             Node obj = parse(node.getAsJsonObject());
+            obj.setVersion(flowDesign.getVersion());
             if (obj instanceof StartNode) {
                 nodeMap.put(NodeType.START.getName(), obj);
             }
