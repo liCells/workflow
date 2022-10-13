@@ -3,6 +3,7 @@ package org.lz.workflow.domain.map;
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ public class EndNode implements Node {
     private String symbol;
     private final NodeType type = NodeType.END;
     private String description;
+    private Integer version;
 
     public NodeType getType() {
         return type;
@@ -51,18 +53,21 @@ public class EndNode implements Node {
         this.description = description;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     @Override
     public void inspect() {
 
     }
 
     @Override
-    public List<Node> getNextTaskNode() {
-        throw new UnsupportedOperationException("EndNode has no next task node");
-    }
-
-    @Override
-    public List<Node> getNextNode() {
+    public List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask) {
         throw new UnsupportedOperationException("EndNode has no next node");
     }
 

@@ -95,4 +95,11 @@ public class RunningTask {
 
     public RunningTask() {
     }
+
+    public RunningTask(Long id, Long flowId, String flowSymbol) {
+        this.id = id;
+        this.flowId = flowId;
+        this.flowSymbol = flowSymbol;
+        this.startTime = LocalDate.now();
+    }
 }

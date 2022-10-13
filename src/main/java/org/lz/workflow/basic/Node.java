@@ -1,5 +1,6 @@
 package org.lz.workflow.basic;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -7,6 +8,7 @@ import java.util.List;
  */
 public interface Node {
     Integer getId();
+
     String getName();
 
     NodeType getType();
@@ -17,7 +19,11 @@ public interface Node {
 
     void inspect();
 
-    List<Node> getNextTaskNode();
+    void setVersion(Integer version);
 
-    List<Node> getNextNode();
+    default List<Node> getNextNodes(HashMap<String, Node> nodeHashMap) {
+        return getNextNodes(nodeHashMap, false);
+    }
+
+    List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask);
 }

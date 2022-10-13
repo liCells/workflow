@@ -5,6 +5,7 @@ import org.lz.workflow.basic.NodeType;
 import org.lz.workflow.basic.TaskNode;
 import org.lz.workflow.utils.StringUtil;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class UserTaskNode implements TaskNode {
     private String description;
     private String executor;
     private List<String> go;
+    private Integer version;
 
     @Override
     public Integer getId() {
@@ -81,6 +83,15 @@ public class UserTaskNode implements TaskNode {
         this.go = go;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public UserTaskNode(Integer id, String name, NodeType type, String symbol, String description, String executor, List<String> go) {
         this.id = id;
         this.name = name;
@@ -121,12 +132,7 @@ public class UserTaskNode implements TaskNode {
     }
 
     @Override
-    public List<Node> getNextTaskNode() {
-        return null;
-    }
-
-    @Override
-    public List<Node> getNextNode() {
+    public List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask) {
         return null;
     }
 }

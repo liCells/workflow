@@ -2,8 +2,11 @@ package org.lz.workflow.domain.map;
 
 import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
+import org.lz.workflow.basic.TaskNode;
 import org.lz.workflow.utils.StringUtil;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,6 +20,7 @@ public class StartNode implements Node {
     private final NodeType type = NodeType.START;
     private String description;
     private List<String> go;
+    private Integer version;
 
     public NodeType getType() {
         return type;
@@ -70,6 +74,15 @@ public class StartNode implements Node {
         this.go = go;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     @Override
     public void inspect() {
         if (StringUtil.isEmpty(name)) {
@@ -108,17 +121,35 @@ public class StartNode implements Node {
                 '}';
     }
 
-    @Override
-    public List<Node> getNextTaskNode() {
-        for (String node : go) {
-            // TODO get next task node in NodeMap
+    public List<Node> getNextTaskNodes(HashMap<String, Node> nodeHashMap) {
+        if (go == null) throw new IllegalArgumentException("Next node is null.");
+        List<Node> nextNodes = new LinkedList<>();
+        for (String nextNodeKey : go) {
+            Node node = nodeHashMap.get(nextNodeKey);
+            if (node instanceof TaskNode) {
+                nextNodes.add(node);
+            } else {
+                nextNodes.addAll(node.getNextNodes(nodeHashMap, true));
+            }
         }
-        throw new IllegalArgumentException("Not found the next task node.");
+        if (nextNodes.isEmpty()) {
+            throw new IllegalArgumentException("Not found the next task node.");
+        }
+        return nextNodes;
     }
 
     @Override
-    public List<Node> getNextNode() {
-        // TODO get next node in NodeMap
-        return null;
+    public List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask) {
+        if (isTask) {
+            return getNextTaskNodes(nodeHashMap);
+        }
+        List<Node> nextNodes = new LinkedList<>();
+        for (String nextNodeKey : go) {
+            nextNodes.add(nodeHashMap.get(nextNodeKey));
+        }
+        if (nextNodes.isEmpty()) {
+            throw new IllegalArgumentException("Not found the next node.");
+        }
+        return nextNodes;
     }
 }

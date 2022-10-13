@@ -4,6 +4,8 @@ import org.lz.workflow.basic.Node;
 import org.lz.workflow.basic.NodeType;
 import org.lz.workflow.utils.StringUtil;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,6 +20,7 @@ public class Line implements Node {
     private String condition;
     private String description;
     private String go;
+    private Integer version;
 
     @Override
     public Integer getId() {
@@ -88,6 +91,15 @@ public class Line implements Node {
         this.go = go;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public Line(Integer id, String name, NodeType type, String symbol, boolean defaultSelected, String condition, String description, String go) {
         this.id = id;
         this.name = name;
@@ -119,15 +131,12 @@ public class Line implements Node {
     }
 
     @Override
-    public List<Node> getNextTaskNode() {
-        // TODO get next task node in NodeMap
-        return null;
-    }
-
-    @Override
-    public List<Node> getNextNode() {
-        // TODO get next node in NodeMap
-        return null;
+    public List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask) {
+        Node node = nodeHashMap.get(go);
+        if (node == null) {
+            throw new IllegalArgumentException(String.format("go {%s} is not exist.", go));
+        }
+        return Collections.singletonList(node);
     }
 
     @Override
