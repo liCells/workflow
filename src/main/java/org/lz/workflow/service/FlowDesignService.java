@@ -89,4 +89,7 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
         }
     }
 
+    public FlowDesign getBySymbolAndVersion(String symbol, Integer version) {
+        return baseMapper.getBySymbolAndVersion(symbol, version);
+    }
 }

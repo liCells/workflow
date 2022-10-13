@@ -13,4 +13,6 @@ public interface FlowDesignMapper extends BaseMapper<FlowDesign> {
     FlowDesign getBySymbol(String symbol);
 
     int getCountBySymbolAndVersion(@Param("symbol") String symbol, @Param("version") Integer version);
+
+    FlowDesign getBySymbolAndVersion(@Param("symbol") String symbol, @Param("version") Integer version);
 }

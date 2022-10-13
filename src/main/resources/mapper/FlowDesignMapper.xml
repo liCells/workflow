@@ -10,4 +10,8 @@
         from flow_design
         where symbol = #{symbol} and version = #{version} limit 1
     </select>
+
+    <select id="getBySymbolAndVersion" resultType="org.lz.workflow.domain.FlowDesign">
+        select * from flow_design where symbol = #{symbol} and version = #{version} limit 1
+    </select>
 </mapper>

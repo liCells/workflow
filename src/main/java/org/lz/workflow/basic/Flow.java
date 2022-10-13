@@ -14,9 +14,10 @@ public class Flow {
     private LocalDate startTime;
     private FlowState state;
 
-    public Flow(String symbol, Integer version) {
+    public Flow(String symbol, Integer version, String name) {
         this.symbol = symbol;
         this.version = version;
+        this.name = name;
     }
 
     public Long getId() {

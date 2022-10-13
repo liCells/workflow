@@ -2,6 +2,7 @@ package org.lz.workflow.service;
 
 import org.lz.workflow.basic.Flow;
 import org.lz.workflow.basic.FlowCommonEnum;
+import org.lz.workflow.basic.FlowState;
 import org.lz.workflow.domain.FlowDesign;
 import org.lz.workflow.event.EventPublisher;
 import org.lz.workflow.event.StartFlowEvent;
@@ -36,7 +37,7 @@ public class FlowService extends FlowCommonService {
             throw new IllegalArgumentException("symbol is empty.");
         }
         FlowDesign flowDesign = flowDesignService.getBySymbol(symbol);
-        return startFlow(new Flow(symbol, flowDesign.getVersion()));
+        return startFlow(new Flow(symbol, flowDesign.getVersion(), flowDesign.getName()));
     }
 
     @Transactional
@@ -47,11 +48,11 @@ public class FlowService extends FlowCommonService {
         if (version == null || version < 1) {
             throw new IllegalArgumentException("version is empty.");
         }
-        int count = flowDesignService.getCountBySymbolAndVersion(symbol, version);
-        if (count == 0) {
-            throw new IllegalArgumentException("symbol is not exists.");
+        FlowDesign flowDesign = flowDesignService.getBySymbolAndVersion(symbol, version);
+        if (flowDesign == null) {
+            throw new IllegalArgumentException("The version symbol is not exists.");
         }
-        return startFlow(new Flow(symbol, version));
+        return startFlow(new Flow(symbol, version, flowDesign.getName()));
     }
 
     /**
@@ -74,6 +75,7 @@ public class FlowService extends FlowCommonService {
 
         // Store data to flow_running & flow_history.
         flowMapper.insertToRunning(flow);
+        flow.setState(FlowState.RUNNING);
         flowMapper.insertToHistory(flow);
 
         // Publish start event.
