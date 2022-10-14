@@ -64,14 +64,12 @@ public class LoadNodeMapHelper {
             case USUAL_TASK: {
                 return gson.fromJson(json, UserTaskNode.class);
             }
-            case SINGLE_ENDED: {
+            case LINE: {
                 return gson.fromJson(json, Line.class);
             }
             case PARALLEL_TASK:
                 // TODO
             case SERIAL_TASK:
-                // TODO
-            case DOUBLE_ENDED:
                 // TODO
             case AUTO_TASK:
                 // TODO
