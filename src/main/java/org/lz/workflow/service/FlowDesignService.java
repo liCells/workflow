@@ -28,7 +28,7 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
     public FlowDesign getBySymbol(String symbol) {
         FlowDesign flowDesign = baseMapper.getBySymbol(symbol);
 
-        Objects.requireNonNull(flowDesign);
+        Objects.requireNonNull(flowDesign, "The flow is not exist.");
 
         return flowDesign;
     }
