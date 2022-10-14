@@ -39,7 +39,8 @@ create table `flow_running`
     `id`         bigint primary key comment '流程id',
     `name`       varchar(60) not null comment '流程名称',
     `symbol`     varchar(60) not null comment '流程标识',
-    `start_time` datetime    not null comment '开始时间'
+    `start_time` datetime    not null comment '开始时间',
+    `version`    integer     not null comment '版本'
 ) engine = InnoDB
   default charset = utf8 comment '流程运行';
 
@@ -52,7 +53,8 @@ create table `flow_running_task`
     `flow_symbol` varchar(32) not null comment '流程标志',
     `executor`    varchar(32) default null comment '执行者',
     `start_time`  datetime    not null comment '开始时间',
-    `type`        varchar(10) not null comment '任务类型 USUAL/PARALLEL/SERIAL'
+    `type`        varchar(10) not null comment '任务类型 USUAL/PARALLEL/SERIAL',
+    `version`     integer     not null comment '版本'
 ) engine = InnoDB
   default charset = utf8 comment '流程任务';
 
@@ -63,18 +65,22 @@ create table `flow_history`
     `symbol`     varchar(60) not null comment '流程标识',
     `start_time` datetime    not null comment '开始时间',
     `end_time`   datetime default null comment '结束时间',
-    `state`      varchar(32) not null comment '状态 RUNNING/FINISHED/DESTROYED'
+    `state`      varchar(32) not null comment '状态 RUNNING/FINISHED/DESTROYED',
+    `version`    integer     not null comment '版本'
 ) engine = InnoDB
   default charset = utf8 comment '流程历史';
 
 create table `flow_history_task`
 (
-    `id`              bigint primary key comment '任务id',
-    `flow_running_id` bigint      not null comment '流程id',
-    `node_symbol`     varchar(32) not null comment '节点标识',
-    `executor`        varchar(32) not null comment '执行者',
-    `start_time`      datetime    not null comment '开始时间',
-    `end_time`        datetime    not null comment '结束时间',
-    `type`            varchar(10) not null comment '任务类型 USUAL/PARALLEL/SERIAL'
+    `id`          bigint primary key comment '任务id',
+    `flow_id`     bigint      not null comment '流程id',
+    `node_symbol` varchar(32) not null comment '节点标识',
+    `name`        varchar(32) not null comment '节点名称',
+    `flow_symbol` varchar(32) not null comment '流程标志',
+    `executor`    varchar(32) not null comment '执行者',
+    `start_time`  datetime    not null comment '开始时间',
+    `end_time`    datetime default null comment '结束时间',
+    `type`        varchar(10) not null comment '任务类型 USUAL/PARALLEL/SERIAL',
+    `version`     integer     not null comment '版本'
 ) engine = InnoDB
   default charset = utf8 comment '流程任务-历史记录';
