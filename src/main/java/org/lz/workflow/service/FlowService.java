@@ -11,7 +11,7 @@ import org.lz.workflow.utils.StringUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * manage running and finished flows
@@ -71,7 +71,8 @@ public class FlowService extends FlowCommonService {
         FlowDesign flowDesign = flowDesignService.getBySymbol(flow.getSymbol());
         flow.setFlowDesignId(flowDesign.getId());
 
-        flow.setStartTime(LocalDate.now());
+        flow.setStartTime(LocalDateTime.now());
+        flow.setVersion(flowDesign.getVersion());
 
         // Store data to flow_running & flow_history.
         flowMapper.insertToRunning(flow);

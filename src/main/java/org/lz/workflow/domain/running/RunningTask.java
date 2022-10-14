@@ -2,7 +2,7 @@ package org.lz.workflow.domain.running;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author lz
@@ -15,8 +15,9 @@ public class RunningTask {
     private String name;
     private String flowSymbol;
     private String executor;
-    private LocalDate startTime;
+    private LocalDateTime startTime;
     private String type;
+    private Integer version;
 
     public Long getId() {
         return id;
@@ -66,11 +67,11 @@ public class RunningTask {
         this.executor = executor;
     }
 
-    public LocalDate getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDate startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
@@ -82,7 +83,15 @@ public class RunningTask {
         this.type = type;
     }
 
-    public RunningTask(Long id, Long flowId, String nodeSymbol, String name, String flowSymbol, String executor, LocalDate startTime, String type) {
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public RunningTask(Long id, Long flowId, String nodeSymbol, String name, String flowSymbol, String executor, LocalDateTime startTime, String type, Integer version) {
         this.id = id;
         this.flowId = flowId;
         this.nodeSymbol = nodeSymbol;
@@ -91,15 +100,25 @@ public class RunningTask {
         this.executor = executor;
         this.startTime = startTime;
         this.type = type;
+        this.version = version;
     }
 
     public RunningTask() {
     }
 
-    public RunningTask(Long id, Long flowId, String flowSymbol) {
+    public RunningTask(Long flowId, String flowSymbol, Integer version, String nodeSymbol) {
+        this.flowId = flowId;
+        this.flowSymbol = flowSymbol;
+        this.version = version;
+        this.nodeSymbol = nodeSymbol;
+        this.startTime = LocalDateTime.now();
+    }
+
+    public RunningTask(Long id, Long flowId, String flowSymbol, Integer version) {
         this.id = id;
         this.flowId = flowId;
         this.flowSymbol = flowSymbol;
-        this.startTime = LocalDate.now();
+        this.version = version;
+        this.startTime = LocalDateTime.now();
     }
 }

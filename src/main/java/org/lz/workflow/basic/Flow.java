@@ -1,6 +1,6 @@
 package org.lz.workflow.basic;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author lz
@@ -11,7 +11,7 @@ public class Flow {
     private Integer version;
     private String name;
     private String symbol;
-    private LocalDate startTime;
+    private LocalDateTime startTime;
     private FlowState state;
 
     public Flow(String symbol, Integer version, String name) {
@@ -60,11 +60,11 @@ public class Flow {
         this.symbol = symbol;
     }
 
-    public LocalDate getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDate startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
