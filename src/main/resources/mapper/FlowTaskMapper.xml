@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.lz.workflow.mapper.FlowTaskMapper">
+    <insert id="saveRunningTask">
+        insert into flow_running_task (id,
+                                       flow_id,
+                                       node_symbol,
+                                       name,
+                                       flow_symbol,
+                                       executor,
+                                       start_time,
+                                       type,
+                                       version)
+        values (#{id},
+                #{flowId},
+                #{nodeSymbol},
+                #{name},
+                #{flowSymbol},
+                #{executor},
+                #{startTime},
+                #{type},
+                #{version})
+    </insert>
+
+    <insert id="saveHistoryTask">
+        insert into flow_history_task (id,
+                                       flow_id,
+                                       node_symbol,
+                                       name,
+                                       flow_symbol,
+                                       executor,
+                                       start_time,
+                                       end_time,
+                                       type,
+                                       version)
+        values (#{id},
+                #{flowId},
+                #{nodeSymbol},
+                #{name},
+                #{flowSymbol},
+                #{executor},
+                #{startTime},
+                #{endTime},
+                #{type},
+                #{version})
+    </insert>
+
+    <insert id="endHistoryTask">
+        update flow_history_task set end_time = now() where id = #{taskId}
+    </insert>
+
+    <update id="endFlow">
+        update flow_history set end_time = now(), state = "FINISHED" where id = #{flowId}
+    </update>
+
+    <delete id="deleteRunningFlow">
+        delete from flow_running where id = #{flowId}
+    </delete>
+
+    <select id="selectRunningTaskCountByFlowId" resultType="java.lang.Integer">
+        select count(*)
+        from flow_running_task
+        where flow_id = #{flowId}
+    </select>
+</mapper>
