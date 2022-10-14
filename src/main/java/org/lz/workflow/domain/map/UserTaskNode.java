@@ -6,6 +6,7 @@ import org.lz.workflow.basic.TaskNode;
 import org.lz.workflow.utils.StringUtil;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -131,8 +132,33 @@ public class UserTaskNode implements TaskNode {
                 '}';
     }
 
+    public List<Node> getNextTaskNodes(HashMap<String, Node> nodeHashMap) {
+        if (go == null) throw new IllegalArgumentException("Next node is null.");
+        List<Node> nextNodes = new LinkedList<>();
+        for (String nextNodeKey : go) {
+            Node node = nodeHashMap.get(nextNodeKey);
+            if (node instanceof TaskNode) {
+                nextNodes.add(node);
+            } else {
+                nextNodes.addAll(node.getNextNodes(nodeHashMap, true));
+            }
+        }
+        if (nextNodes.isEmpty()) {
+            throw new IllegalArgumentException("Not found the next task node.");
+        }
+        return nextNodes;
+    }
+
     @Override
     public List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask) {
-        return null;
+        if (isTask) {
+            return getNextTaskNodes(nodeHashMap);
+        }
+        List<Node> nextNodes = new LinkedList<>();
+        for (String nextNodeKey : go) {
+            Node node = nodeHashMap.get(nextNodeKey);
+            nextNodes.add(node);
+        }
+        return nextNodes;
     }
 }
