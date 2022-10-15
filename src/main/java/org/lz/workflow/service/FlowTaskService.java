@@ -17,10 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
+ * TODO integration method
+ *
  * @author lz
  */
 @Service
@@ -57,14 +60,13 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
     /**
      * Set variables.
      * If the flow is finished, an exception is thrown.
-     * TODO Same key override
      *
-     * @param taskId task id
-     * @param flowId flow id
-     * @param taskVariables this parameter can be obtained only on the corresponding task
+     * @param taskId          task id
+     * @param flowId          flow id
+     * @param taskVariables   this parameter can be obtained only on the corresponding task
      * @param globalVariables this parameter can be obtained on all tasks
-     * @exception FlowFinishedException if ignoreState is false also the flow is finished
-     * @exception TaskFinishedException if ignoreState is false also the task is ended
+     * @throws FlowFinishedException if ignoreState is false also the flow is finished
+     * @throws TaskFinishedException if ignoreState is false also the task is ended
      */
     @Transactional
     public void setVariables(Long taskId, Long flowId, boolean ignoreState, Map<String, Object> taskVariables, Map<String, Object> globalVariables) {
@@ -92,8 +94,8 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
      *
      * @param nodeHashMap node map
      * @param runningTask running task
-     * @param isStart is start
-     * @exception NullPointerException if the node is not exist
+     * @param isStart     is start
+     * @throws NullPointerException if the node is not exist
      */
     protected void complete(HashMap<String, Node> nodeHashMap, RunningTask runningTask, boolean isStart) {
         // Get id.
@@ -204,10 +206,48 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
     }
 
     private void saveRunningTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
-        baseMapper.saveRunningTaskVariables(taskId, flowId, variables);
+        Map<String, Object> vars = new HashMap<>(variables);
+        // Get whether it exists
+        List<String> keys = baseMapper.selectRunningTaskVariablesByTaskIdAndNames(taskId, flowId, vars.keySet());
+        if (keys.isEmpty()) {
+            baseMapper.saveRunningTaskVariables(taskId, flowId, vars);
+            return;
+        } else {
+            Map<String, Object> updateVars = new HashMap<>(vars);
+            for (String key : keys) {
+                if (!updateVars.containsKey(key)) {
+                    updateVars.remove(key);
+                }
+            }
+            baseMapper.updateRunningTaskVariables(taskId, flowId, updateVars);
+            keys.forEach(vars::remove);
+        }
+        if (vars.isEmpty()) {
+            return;
+        }
+        baseMapper.saveRunningTaskVariables(taskId, flowId, vars);
     }
 
     private void saveHistoryTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
-        baseMapper.saveHistoryTaskVariables(taskId, flowId, variables);
+        Map<String, Object> vars = new HashMap<>(variables);
+        // Get whether it exists
+        List<String> keys = baseMapper.selectHistoryTaskVariablesByTaskIdAndNames(taskId, flowId, vars.keySet());
+        if (keys.isEmpty()) {
+            baseMapper.saveHistoryTaskVariables(taskId, flowId, vars);
+            return;
+        } else {
+            Map<String, Object> updateVars = new HashMap<>(vars);
+            for (String key : keys) {
+                if (!updateVars.containsKey(key)) {
+                    updateVars.remove(key);
+                }
+            }
+            baseMapper.updateHistoryTaskVariables(taskId, flowId, updateVars);
+            keys.forEach(vars::remove);
+        }
+        if (vars.isEmpty()) {
+            return;
+        }
+        baseMapper.saveHistoryTaskVariables(taskId, flowId, vars);
     }
 }

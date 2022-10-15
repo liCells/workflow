@@ -103,6 +103,50 @@
         where id = #{flowId}
     </update>
 
+    <update id="updateRunningTaskVariables">
+        update flow_running_variables
+        set val = case name
+        <foreach collection="variables" index="key" item="val">
+            when #{key} then #{val}
+        </foreach>
+        end
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="variables" index="key" item="val" open="(" close=")" separator=",">
+            #{key}
+        </foreach>
+    </update>
+
+    <update id="updateHistoryTaskVariables">
+        update flow_history_variables
+        set val = case name
+        <foreach collection="variables" index="key" item="val">
+            when #{key} then #{val}
+        </foreach>
+        end
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="variables" index="key" item="val" open="(" close=")" separator=",">
+            #{key}
+        </foreach>
+    </update>
+
     <delete id="deleteRunningFlow">
         delete
         from flow_running
@@ -155,5 +199,41 @@
         select count(*)
         from flow_running_task
         where flow_id = #{flowId}
+    </select>
+
+    <select id="selectRunningTaskVariablesByTaskIdAndNames" resultType="java.lang.String">
+        select name
+        from flow_running_variables
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="names" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
+
+    <select id="selectHistoryTaskVariablesByTaskIdAndNames" resultType="java.lang.String">
+        select name
+        from flow_history_variables
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="names" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
     </select>
 </mapper>
