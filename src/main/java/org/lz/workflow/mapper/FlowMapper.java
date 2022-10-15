@@ -1,5 +1,6 @@
 package org.lz.workflow.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.lz.workflow.basic.Flow;
 
 /**
@@ -12,5 +13,5 @@ public interface FlowMapper {
 
     String getState(Long flowId);
 
-    Flow get(Long flowId, boolean isRunning);
+    Flow get(@Param("flowId") Long flowId, @Param("isRunning") boolean isRunning);
 }
