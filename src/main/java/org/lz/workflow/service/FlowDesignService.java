@@ -25,12 +25,23 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
      * @param symbol the symbol of the flowDesign.
      * @return the latest version of flowDesign to which.
      */
-    public FlowDesign getBySymbol(String symbol) {
+    public FlowDesign get(String symbol) {
         FlowDesign flowDesign = baseMapper.getBySymbol(symbol);
 
         Objects.requireNonNull(flowDesign, "The flow is not exist.");
 
         return flowDesign;
+    }
+
+    /**
+     * Returns specify the version of flowDesign to which the symbol is mapped.
+     *
+     * @param symbol the symbol of the flowDesign.
+     * @param version the version of the flowDesign.
+     * @return specify the version of flowDesign to which.
+     */
+    public FlowDesign get(String symbol, int version) {
+        return baseMapper.getBySymbolAndVersion(symbol, version);
     }
 
     /**
@@ -87,9 +98,5 @@ public class FlowDesignService extends ServiceImpl<FlowDesignMapper, FlowDesign>
         for (Node node : map) {
             node.inspect();
         }
-    }
-
-    public FlowDesign getBySymbolAndVersion(String symbol, Integer version) {
-        return baseMapper.getBySymbolAndVersion(symbol, version);
     }
 }
