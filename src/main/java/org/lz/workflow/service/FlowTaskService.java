@@ -9,6 +9,8 @@ import org.lz.workflow.domain.history.HistoryTask;
 import org.lz.workflow.domain.map.Line;
 import org.lz.workflow.domain.map.UserTaskNode;
 import org.lz.workflow.domain.running.RunningTask;
+import org.lz.workflow.exception.FlowFinishedException;
+import org.lz.workflow.exception.TaskFinishedException;
 import org.lz.workflow.mapper.FlowTaskMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +29,12 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
 
     private final LineService lineService;
 
-    public FlowTaskService(FlowCommonService flowCommonService, LineService lineService) {
+    private final FlowService flowService;
+
+    public FlowTaskService(FlowCommonService flowCommonService, LineService lineService, FlowService flowService) {
         this.flowCommonService = flowCommonService;
         this.lineService = lineService;
+        this.flowService = flowService;
     }
 
     @Transactional
@@ -49,6 +54,46 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         complete(nodeHashMap, runningTask, false);
     }
 
+    /**
+     * Set variables.
+     * If the flow is finished, an exception is thrown.
+     *
+     * @param taskId task id
+     * @param flowId flow id
+     * @param taskVariables this parameter can be obtained only on the corresponding task
+     * @param globalVariables this parameter can be obtained on all tasks
+     * @exception FlowFinishedException if ignoreState is false also the flow is finished
+     * @exception TaskFinishedException if ignoreState is false also the task is ended
+     */
+    @Transactional
+    public void setVariables(Long taskId, Long flowId, boolean ignoreState, Map<String, Object> taskVariables, Map<String, Object> globalVariables) {
+        if (!ignoreState) {
+            try {
+                flowService.getFlow(flowId, true);
+            } catch (NullPointerException e) {
+                throw new FlowFinishedException();
+            }
+        }
+        if (taskId != null) {
+            if (!ignoreState) {
+                RunningTask task = getById(taskId);
+                if (task == null) {
+                    throw new TaskFinishedException();
+                }
+            }
+            saveTaskVariables(taskId, flowId, taskVariables);
+        }
+        saveTaskVariables(null, flowId, globalVariables);
+    }
+
+    /**
+     * Complete task.
+     *
+     * @param nodeHashMap node map
+     * @param runningTask running task
+     * @param isStart is start
+     * @exception NullPointerException if the node is not exist
+     */
     protected void complete(HashMap<String, Node> nodeHashMap, RunningTask runningTask, boolean isStart) {
         // Get id.
         Long id = flowCommonService.getIdAndIncr(FlowCommonEnum.TASK_KEY);
@@ -134,15 +179,19 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         saveHistoryTask(historyTask);
         saveRunningTask(runningTask);
 
-        saveTaskVariables(runningTask);
+        saveTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
+        saveTaskVariables(null, runningTask.getFlowId(), runningTask.getGlobalVariables());
     }
 
-    private void saveTaskVariables(RunningTask runningTask) {
-        if (runningTask.getVariables() == null) {
+    private void saveTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
+        if (variables == null || variables.isEmpty()) {
             return;
         }
-        saveRunningTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
-        saveHistoryTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
+        if (flowId == null) {
+            throw new IllegalArgumentException("flowId is empty.");
+        }
+        saveRunningTaskVariables(taskId, flowId, variables);
+        saveHistoryTaskVariables(taskId, flowId, variables);
     }
 
     private void saveRunningTask(RunningTask task) {

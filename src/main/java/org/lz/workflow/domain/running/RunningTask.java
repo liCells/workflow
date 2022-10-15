@@ -24,6 +24,7 @@ public class RunningTask {
     private Integer version;
     @TableField(exist = false)
     private Map<String, Object> variables;
+    private Map<String, Object> globalVariables;
 
     public Long getId() {
         return id;
@@ -105,7 +106,15 @@ public class RunningTask {
         this.variables = variables;
     }
 
-    public RunningTask(Long id, Long flowId, String nodeSymbol, String name, String flowSymbol, String executor, LocalDateTime startTime, String type, Integer version, Map<String, Object> variables) {
+    public Map<String, Object> getGlobalVariables() {
+        return globalVariables;
+    }
+
+    public void setGlobalVariables(Map<String, Object> globalVariables) {
+        this.globalVariables = globalVariables;
+    }
+
+    public RunningTask(Long id, Long flowId, String nodeSymbol, String name, String flowSymbol, String executor, LocalDateTime startTime, String type, Integer version, Map<String, Object> variables, Map<String, Object> globalVariables) {
         this.id = id;
         this.flowId = flowId;
         this.nodeSymbol = nodeSymbol;
@@ -116,6 +125,7 @@ public class RunningTask {
         this.type = type;
         this.version = version;
         this.variables = variables;
+        this.globalVariables = globalVariables;
     }
 
     public RunningTask() {
@@ -126,7 +136,7 @@ public class RunningTask {
         this.flowSymbol = startFlowEvent.getFlowSymbol();
         this.version = startFlowEvent.getFlowVersion();
         this.nodeSymbol = NodeType.START.getName();
-        this.variables = startFlowEvent.getVariables();
+        this.globalVariables = startFlowEvent.getVariables();
         this.startTime = LocalDateTime.now();
     }
 }
