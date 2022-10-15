@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * manage running and finished flows
@@ -32,27 +33,38 @@ public class FlowService extends FlowCommonService {
     }
 
     @Transactional
-    public Flow startFlow(String symbol) {
+    public Flow startFlow(String symbol, Map<String, Object> variables) {
         if (StringUtil.isEmpty(symbol)) {
             throw new IllegalArgumentException("symbol is empty.");
         }
-        FlowDesign flowDesign = flowDesignService.getBySymbol(symbol);
-        return startFlow(new Flow(symbol, flowDesign.getVersion(), flowDesign.getName()));
+        FlowDesign flowDesign = flowDesignService.get(symbol);
+
+        return startFlow(new Flow(flowDesign, variables));
     }
 
     @Transactional
-    public Flow startFlow(String symbol, Integer version) {
+    public Flow startFlow(String symbol) {
+        return startFlow(symbol, null);
+    }
+
+    @Transactional
+    public Flow startFlow(String symbol, int version, Map<String, Object> variables) {
         if (StringUtil.isEmpty(symbol)) {
             throw new IllegalArgumentException("symbol is empty.");
         }
-        if (version == null || version < 1) {
+        if (version < 1) {
             throw new IllegalArgumentException("version is empty.");
         }
-        FlowDesign flowDesign = flowDesignService.getBySymbolAndVersion(symbol, version);
+        FlowDesign flowDesign = flowDesignService.get(symbol, version);
         if (flowDesign == null) {
             throw new IllegalArgumentException("The version symbol is not exists.");
         }
-        return startFlow(new Flow(symbol, version, flowDesign.getName()));
+        return startFlow(new Flow(flowDesign, variables));
+    }
+
+    @Transactional
+    public Flow startFlow(String symbol, int version) {
+        return startFlow(symbol, version, null);
     }
 
     /**
@@ -68,7 +80,7 @@ public class FlowService extends FlowCommonService {
         Long id = getIdAndIncr(FlowCommonEnum.FLOW_KEY);
         flow.setId(id);
         // Get flow design.
-        FlowDesign flowDesign = flowDesignService.getBySymbol(flow.getSymbol());
+        FlowDesign flowDesign = flowDesignService.get(flow.getSymbol(), flow.getVersion());
         flow.setFlowDesignId(flowDesign.getId());
 
         flow.setStartTime(LocalDateTime.now());
