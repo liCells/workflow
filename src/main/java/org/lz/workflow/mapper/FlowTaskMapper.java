@@ -16,9 +16,9 @@ import java.util.Set;
 @Mapper
 public interface FlowTaskMapper extends BaseMapper<RunningTask> {
 
-    void saveRunningTask(RunningTask task);
+    void saveRunningTask(@Param("task") RunningTask task);
 
-    void saveHistoryTask(HistoryTask task);
+    void saveHistoryTask(@Param("task") HistoryTask task);
 
     void endHistoryTask(@Param("taskId") Long taskId);
 
@@ -26,35 +26,25 @@ public interface FlowTaskMapper extends BaseMapper<RunningTask> {
 
     void endFlow(Long flowId);
 
-    void deleteRunningFlow(Long flowId);
+    void deleteFlow(@Param("flowId") Long flowId, @Param("isRunning") boolean isRunning);
 
-    void saveRunningTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> variables);
+    void saveTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> variables, @Param("isRunning") boolean isRunning);
 
-    void saveHistoryTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> variables);
+    void deleteTaskVariables(@Param("taskId") Long taskId, @Param("isRunning") boolean isRunning);
 
-    void deleteRunningVariables(Long taskId);
+    void deleteTaskByFlowId(@Param("flowId") Long flowId, @Param("isRunning") boolean isRunning);
 
-    void deleteRunningTaskByFlowId(Long flowId);
+    void deleteTaskVariablesByFlowId(@Param("flowId") Long flowId, @Param("isRunning") boolean isRunning);
 
-    void deleteRunningTaskVariablesByFlowId(Long flowId);
+    void deleteByFlowId(@Param("flowId") Long flowId, @Param("isRunning") boolean isRunning);
 
-    void deleteHistoryTaskByFlowId(Long flowId);
-
-    void deleteHistoryTaskVariablesByFlowId(Long flowId);
-
-    void deleteRunningByFlowId(Long flowId);
-
-    void deleteHistoryByFlowId(Long flowId);
-
-    void endHistoryTaskByFlowId(Long flowId);
+    void endTaskByFlowId(Long flowId);
 
     void destroyFlow(Long flowId);
 
-    List<String> selectRunningTaskVariablesByTaskIdAndNames(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("names") Set<String> names);
+    List<String> selectTaskVariablesByTaskIdAndNames(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("names") Set<String> names, @Param("isRunning") boolean isRunning);
 
     void updateRunningTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> updateVars);
-
-    List<String> selectHistoryTaskVariablesByTaskIdAndNames(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("names") Set<String> names);
 
     void updateHistoryTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> updateVars);
 }

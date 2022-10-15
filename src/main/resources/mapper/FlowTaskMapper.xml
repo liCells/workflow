@@ -51,24 +51,17 @@
         where id = #{taskId}
     </insert>
 
-    <insert id="saveRunningTaskVariables">
-        insert into flow_running_variables (
-        task_id,
-        flow_id,
-        name,
-        val)
-        values
-        <foreach collection="variables" index="key" item="val" separator=",">
-            (
-            #{taskId},
-            #{flowId},
-            #{key},
-            #{val})
-        </foreach>
-    </insert>
-
-    <insert id="saveHistoryTaskVariables">
-        insert into flow_history_variables (
+    <insert id="saveTaskVariables">
+        insert into
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        (
         task_id,
         flow_id,
         name,
@@ -90,7 +83,7 @@
         where id = #{flowId}
     </update>
 
-    <update id="endHistoryTaskByFlowId">
+    <update id="endTaskByFlowId">
         update flow_history_task
         set end_time = now()
         where flow_id = #{flowId}
@@ -147,51 +140,73 @@
         </foreach>
     </update>
 
-    <delete id="deleteRunningFlow">
+    <delete id="deleteFlow">
         delete
-        from flow_running
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running
+            </when>
+            <otherwise>
+                flow_history
+            </otherwise>
+        </choose>
         where id = #{flowId}
     </delete>
 
-    <delete id="deleteRunningVariables">
+    <delete id="deleteTaskVariables">
         delete
-        from flow_running_variables
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
         where task_id = #{taskId}
     </delete>
 
-    <delete id="deleteRunningTaskByFlowId">
+    <delete id="deleteTaskByFlowId">
         delete
-        from flow_running_task
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_task
+            </when>
+            <otherwise>
+                flow_history_task
+            </otherwise>
+        </choose>
         where flow_id = #{flowId}
     </delete>
 
-    <delete id="deleteRunningTaskVariablesByFlowId">
+    <delete id="deleteTaskVariablesByFlowId">
         delete
-        from flow_running_variables
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
         where flow_id = #{flowId}
     </delete>
 
-    <delete id="deleteHistoryTaskByFlowId">
+    <delete id="deleteByFlowId">
         delete
-        from flow_history_task
-        where flow_id = #{flowId}
-    </delete>
-
-    <delete id="deleteHistoryTaskVariablesByFlowId">
-        delete
-        from flow_history_variables
-        where flow_id = #{flowId}
-    </delete>
-
-    <delete id="deleteRunningByFlowId">
-        delete
-        from flow_running
-        where id = #{flowId}
-    </delete>
-
-    <delete id="deleteHistoryByFlowId">
-        delete
-        from flow_history
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running
+            </when>
+            <otherwise>
+                flow_history
+            </otherwise>
+        </choose>
         where id = #{flowId}
     </delete>
 
@@ -201,9 +216,17 @@
         where flow_id = #{flowId}
     </select>
 
-    <select id="selectRunningTaskVariablesByTaskIdAndNames" resultType="java.lang.String">
+    <select id="selectTaskVariablesByTaskIdAndNames" resultType="java.lang.String">
         select name
-        from flow_running_variables
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
         where flow_id = #{flowId}
         <choose>
             <when test="taskId != null">
