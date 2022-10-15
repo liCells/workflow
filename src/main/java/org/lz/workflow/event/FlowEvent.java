@@ -1,5 +1,7 @@
 package org.lz.workflow.event;
 
+import java.util.Map;
+
 /**
  * @author lz
  */
@@ -9,4 +11,6 @@ public interface FlowEvent {
     String getFlowSymbol();
 
     Integer getFlowVersion();
+
+    Map<String, Object> getVariables();
 }

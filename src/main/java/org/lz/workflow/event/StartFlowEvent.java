@@ -2,6 +2,8 @@ package org.lz.workflow.event;
 
 import org.lz.workflow.basic.Flow;
 
+import java.util.Map;
+
 /**
  * @author lz
  */
@@ -24,5 +26,10 @@ public class StartFlowEvent implements FlowEvent {
 
     public Integer getFlowVersion() {
         return flow.getVersion();
+    }
+
+    @Override
+    public Map<String, Object> getVariables() {
+        return flow.getVariables();
     }
 }

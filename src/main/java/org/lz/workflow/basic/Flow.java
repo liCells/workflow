@@ -1,6 +1,9 @@
 package org.lz.workflow.basic;
 
+import org.lz.workflow.domain.FlowDesign;
+
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author lz
@@ -13,11 +16,13 @@ public class Flow {
     private String symbol;
     private LocalDateTime startTime;
     private FlowState state;
+    private Map<String, Object> variables;
 
-    public Flow(String symbol, Integer version, String name) {
-        this.symbol = symbol;
-        this.version = version;
-        this.name = name;
+    public Flow(FlowDesign flowDesign, Map<String, Object> variables) {
+        this.symbol = flowDesign.getSymbol();
+        this.version = flowDesign.getVersion();
+        this.name = flowDesign.getName();
+        this.variables = variables;
     }
 
     public Long getId() {
@@ -74,5 +79,13 @@ public class Flow {
 
     public void setState(FlowState state) {
         this.state = state;
+    }
+
+    public Map<String, Object> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 }

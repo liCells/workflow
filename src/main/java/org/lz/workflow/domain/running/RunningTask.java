@@ -1,8 +1,12 @@
 package org.lz.workflow.domain.running;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.lz.workflow.basic.NodeType;
+import org.lz.workflow.event.StartFlowEvent;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author lz
@@ -18,6 +22,8 @@ public class RunningTask {
     private LocalDateTime startTime;
     private String type;
     private Integer version;
+    @TableField(exist = false)
+    private Map<String, Object> variables;
 
     public Long getId() {
         return id;
@@ -91,7 +97,15 @@ public class RunningTask {
         this.version = version;
     }
 
-    public RunningTask(Long id, Long flowId, String nodeSymbol, String name, String flowSymbol, String executor, LocalDateTime startTime, String type, Integer version) {
+    public Map<String, Object> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
+    }
+
+    public RunningTask(Long id, Long flowId, String nodeSymbol, String name, String flowSymbol, String executor, LocalDateTime startTime, String type, Integer version, Map<String, Object> variables) {
         this.id = id;
         this.flowId = flowId;
         this.nodeSymbol = nodeSymbol;
@@ -101,24 +115,18 @@ public class RunningTask {
         this.startTime = startTime;
         this.type = type;
         this.version = version;
+        this.variables = variables;
     }
 
     public RunningTask() {
     }
 
-    public RunningTask(Long flowId, String flowSymbol, Integer version, String nodeSymbol) {
-        this.flowId = flowId;
-        this.flowSymbol = flowSymbol;
-        this.version = version;
-        this.nodeSymbol = nodeSymbol;
-        this.startTime = LocalDateTime.now();
-    }
-
-    public RunningTask(Long id, Long flowId, String flowSymbol, Integer version) {
-        this.id = id;
-        this.flowId = flowId;
-        this.flowSymbol = flowSymbol;
-        this.version = version;
+    public RunningTask(StartFlowEvent startFlowEvent) {
+        this.flowId = startFlowEvent.getFlowId();
+        this.flowSymbol = startFlowEvent.getFlowSymbol();
+        this.version = startFlowEvent.getFlowVersion();
+        this.nodeSymbol = NodeType.START.getName();
+        this.variables = startFlowEvent.getVariables();
         this.startTime = LocalDateTime.now();
     }
 }
