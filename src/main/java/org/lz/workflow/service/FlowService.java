@@ -121,7 +121,6 @@ public class FlowService extends FlowCommonService {
         Flow flow = getFlow(flowId);
         // delete data of flow_running & flow_history & flow_running_task & flow_history_task
         // & flow_running_variables & flow_history_variables
-        // TODO complete event listener.
         eventPublisher.setFlowEvent(new DeleteFlowEvent(flowId));
         return flow;
     }
@@ -147,7 +146,6 @@ public class FlowService extends FlowCommonService {
         Flow flow = getFlow(flowId);
         // 1. delete data of flow_running & flow_running_task & flow_running_variables
         // 2. update data of flow_history & flow_history_task
-        // TODO complete event listener.
         eventPublisher.setFlowEvent(new DestroyFlowEvent(flowId));
         flow.setState(FlowState.DESTROYED);
         return flow;
