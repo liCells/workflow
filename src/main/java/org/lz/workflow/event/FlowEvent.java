@@ -8,9 +8,15 @@ import java.util.Map;
 public interface FlowEvent {
     Long getFlowId();
 
-    String getFlowSymbol();
+    default String getFlowSymbol() {
+        throw new UnsupportedOperationException();
+    }
 
-    Integer getFlowVersion();
+    default Integer getFlowVersion() {
+        throw new UnsupportedOperationException();
+    }
 
-    Map<String, Object> getVariables();
+    default Map<String, Object> getVariables() {
+        throw new UnsupportedOperationException();
+    }
 }
