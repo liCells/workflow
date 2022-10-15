@@ -14,7 +14,7 @@ public class EventPublisher {
         this.publisher = publisher;
     }
 
-    public void startFlow(FlowEvent flowEvent) {
+    public void setFlowEvent(FlowEvent flowEvent) {
         publisher.publishEvent(flowEvent);
     }
 }
