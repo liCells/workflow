@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.lz.workflow.domain.history.HistoryTask;
 import org.lz.workflow.domain.running.RunningTask;
 
+import java.util.Map;
+
 /**
  * @author lz
  */
@@ -23,4 +25,10 @@ public interface FlowTaskMapper extends BaseMapper<RunningTask> {
     void endFlow(Long flowId);
 
     void deleteRunningFlow(Long flowId);
+
+    void saveRunningTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> variables);
+
+    void saveHistoryTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> variables);
+
+    void deleteRunningVariables(Long taskId);
 }

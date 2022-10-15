@@ -46,15 +46,60 @@
     </insert>
 
     <insert id="endHistoryTask">
-        update flow_history_task set end_time = now() where id = #{taskId}
+        update flow_history_task
+        set end_time = now()
+        where id = #{taskId}
+    </insert>
+
+    <insert id="saveRunningTaskVariables">
+        insert into flow_running_variables (
+        task_id,
+        flow_id,
+        name,
+        val)
+        values
+        <foreach collection="variables" index="key" item="val" separator=",">
+            (
+            #{taskId},
+            #{flowId},
+            #{key},
+            #{val})
+        </foreach>
+    </insert>
+
+    <insert id="saveHistoryTaskVariables">
+        insert into flow_history_variables (
+        task_id,
+        flow_id,
+        name,
+        val)
+        values
+        <foreach collection="variables" index="key" item="val" separator=",">
+            (
+            #{taskId},
+            #{flowId},
+            #{key},
+            #{val})
+        </foreach>
     </insert>
 
     <update id="endFlow">
-        update flow_history set end_time = now(), state = "FINISHED" where id = #{flowId}
+        update flow_history
+        set end_time = now(),
+            state    = "FINISHED"
+        where id = #{flowId}
     </update>
 
     <delete id="deleteRunningFlow">
-        delete from flow_running where id = #{flowId}
+        delete
+        from flow_running
+        where id = #{flowId}
+    </delete>
+
+    <delete id="deleteRunningVariables">
+        delete
+        from flow_running_variables
+        where task_id = #{taskId}
     </delete>
 
     <select id="selectRunningTaskCountByFlowId" resultType="java.lang.Integer">

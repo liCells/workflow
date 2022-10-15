@@ -15,7 +15,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -40,24 +42,25 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         Objects.requireNonNull(nodeHashMap, "Flow not exist.");
 
         // Init running task.
-        final RunningTask task = new RunningTask(
-                startFlowEvent.getFlowId(),
-                startFlowEvent.getFlowSymbol(),
-                startFlowEvent.getFlowVersion(),
-                NodeType.START.getName()
-        );
+        final RunningTask task = new RunningTask(startFlowEvent);
 
         complete(nodeHashMap, task, true);
     }
 
     @Transactional
     public void complete(String taskId) {
+        complete(taskId, null);
+    }
+
+    @Transactional
+    public void complete(String taskId, Map<String, Object> variables) {
         RunningTask runningTask = baseMapper.selectById(taskId);
 
         Objects.requireNonNull(runningTask, "Task not exist.");
 
         HashMap<String, Node> nodeHashMap = NodeMap.get(runningTask.getFlowSymbol(), runningTask.getVersion());
 
+        runningTask.setVariables(variables);
         complete(nodeHashMap, runningTask, false);
     }
 
@@ -65,15 +68,12 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         // Get id.
         Long id = flowCommonService.getIdAndIncr(FlowCommonEnum.TASK_KEY);
 
-        final RunningTask task;
-        if (isStart) {
-            // Set primary key.
-            runningTask.setId(id);
-            task = runningTask;
-        } else {
-            // Init running task.
-            task = new RunningTask(id, runningTask.getFlowId(), runningTask.getFlowSymbol(), runningTask.getVersion());
-        }
+        // Get complete task id.
+        Long taskId = isStart ? id : runningTask.getId();
+
+        // Set primary key.
+        runningTask.setId(id);
+        runningTask.setStartTime(LocalDateTime.now());
 
         boolean isEnd = false;
         // Get next task node, and save to task.
@@ -83,13 +83,13 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
                 Node nextNode = NodeMap.getNextNodes(nodeHashMap, line.getSymbol()).get(0);
                 if (nextNode instanceof UserTaskNode) {
                     UserTaskNode userTaskNode = (UserTaskNode) nextNode;
-                    task.setName(userTaskNode.getName());
-                    task.setNodeSymbol(userTaskNode.getSymbol());
-                    task.setType(userTaskNode.getType().getName());
+                    runningTask.setName(userTaskNode.getName());
+                    runningTask.setNodeSymbol(userTaskNode.getSymbol());
+                    runningTask.setType(userTaskNode.getType().getName());
                     // TODO determine whether parsing is required
-                    task.setExecutor(userTaskNode.getExecutor());
+                    runningTask.setExecutor(userTaskNode.getExecutor());
                     // Save new task.
-                    saveTask(task);
+                    saveTask(runningTask);
                     break;
                 }
                 if (nextNode.getType() == NodeType.END) {
@@ -102,9 +102,10 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         }
 
         if (!isStart) {
-            // If is running, so delete running task and end history task.
-            baseMapper.deleteById(runningTask.getId());
-            baseMapper.endHistoryTask(runningTask.getId());
+            // If is running, so delete running task and variables, and end history task.
+            baseMapper.deleteById(taskId);
+            baseMapper.endHistoryTask(taskId);
+            baseMapper.deleteRunningVariables(taskId);
         }
 
         if (isEnd) {
@@ -121,6 +122,13 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         HistoryTask historyTask = new HistoryTask(runningTask);
         saveHistoryTask(historyTask);
         saveRunningTask(runningTask);
+
+        saveTaskVariables(runningTask);
+    }
+
+    private void saveTaskVariables(RunningTask runningTask) {
+        saveRunningTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
+        saveHistoryTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
     }
 
     private void saveRunningTask(RunningTask task) {
@@ -129,5 +137,13 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
 
     private void saveHistoryTask(HistoryTask task) {
         baseMapper.saveHistoryTask(task);
+    }
+
+    private void saveRunningTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
+        baseMapper.saveRunningTaskVariables(taskId, flowId, variables);
+    }
+
+    private void saveHistoryTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
+        baseMapper.saveHistoryTaskVariables(taskId, flowId, variables);
     }
 }
