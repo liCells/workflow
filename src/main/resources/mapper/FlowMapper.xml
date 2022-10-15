@@ -10,4 +10,24 @@
         insert into flow_history (id, name, symbol, start_time, state, version)
         values (#{id}, #{name}, #{symbol}, #{startTime}, #{state}, #{version})
     </insert>
+
+    <select id="getState" resultType="java.lang.String">
+        select state
+        from flow_history
+        where id = #{flowId} limit 1
+    </select>
+
+    <select id="get" resultType="org.lz.workflow.basic.Flow">
+        select *
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running
+            </when>
+            <otherwise>
+                flow_history
+            </otherwise>
+        </choose>
+        where id = #{flowId} limit 1
+    </select>
 </mapper>

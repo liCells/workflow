@@ -4,8 +4,12 @@ import org.lz.workflow.basic.Flow;
 import org.lz.workflow.basic.FlowCommonEnum;
 import org.lz.workflow.basic.FlowState;
 import org.lz.workflow.domain.FlowDesign;
+import org.lz.workflow.event.DeleteFlowEvent;
+import org.lz.workflow.event.DestroyFlowEvent;
 import org.lz.workflow.event.EventPublisher;
 import org.lz.workflow.event.StartFlowEvent;
+import org.lz.workflow.exception.FlowFinishedException;
+import org.lz.workflow.exception.FlowRunningException;
 import org.lz.workflow.mapper.FlowMapper;
 import org.lz.workflow.utils.StringUtil;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * manage running and finished flows
@@ -72,6 +77,7 @@ public class FlowService extends FlowCommonService {
      * Store data to `running` and `history`.
      * Flow id from `flow_common` table.
      *
+     * @event StartFlowEvent
      * @param flow flow specific parameters
      * @return completed flow
      */
@@ -79,12 +85,7 @@ public class FlowService extends FlowCommonService {
         // Get flow id.
         Long id = getIdAndIncr(FlowCommonEnum.FLOW_KEY);
         flow.setId(id);
-        // Get flow design.
-        FlowDesign flowDesign = flowDesignService.get(flow.getSymbol(), flow.getVersion());
-        flow.setFlowDesignId(flowDesign.getId());
-
         flow.setStartTime(LocalDateTime.now());
-        flow.setVersion(flowDesign.getVersion());
 
         // Store data to flow_running & flow_history.
         flowMapper.insertToRunning(flow);
@@ -92,26 +93,89 @@ public class FlowService extends FlowCommonService {
         flowMapper.insertToHistory(flow);
 
         // Publish start event.
-        eventPublisher.startFlow(new StartFlowEvent(flow));
-
+        eventPublisher.setFlowEvent(new StartFlowEvent(flow));
         return flow;
     }
 
-    public Flow deleteFlow(String flowId) {
-        // TODO delete from database.
+    /**
+     * Delete running or history flow.
+     * If the flow's state is running,
+     * then `forceDelete` needs to be true,
+     * otherwise an exception is thrown.
+     *
+     * @event DeleteFlowEvent
+     * @exception FlowRunningException if the flow's state is running and `forceDelete` is false.
+     * @param flowId flow id
+     * @return destroy flow
+     */
+    @Transactional
+    public Flow deleteFlow(Long flowId, boolean forceDelete) {
+        if (flowId == null) {
+            throw new IllegalArgumentException("flowId is empty.");
+        }
+        if (!forceDelete && FlowState.RUNNING.getName().equals(flowMapper.getState(flowId))) {
+            throw new FlowRunningException();
+        }
+        Flow flow = getFlow(flowId);
         // delete data of flow_running & flow_history & flow_running_task & flow_history_task
-        return null;
+        // & flow_running_variables & flow_history_variables
+        // TODO complete event listener.
+        eventPublisher.setFlowEvent(new DeleteFlowEvent(flowId));
+        return flow;
     }
 
-    public Flow destroyFlow(String flowId) {
-        // TODO delete and update data from database.
+    /**
+     * Destroy running flow.
+     * If the flow's state is finished, an exception is thrown.
+     *
+     * @event DestroyFlowEvent
+     * @exception FlowFinishedException if the flow's state is finished.
+     * @param flowId flow id
+     * @return destroy flow
+     */
+    @Transactional
+    public Flow destroyFlow(Long flowId) {
+        if (flowId == null) {
+            throw new IllegalArgumentException("flowId is empty.");
+        }
+        if (!FlowState.RUNNING.getName().equals(flowMapper.getState(flowId))) {
+            throw new FlowFinishedException();
+        }
+
+        Flow flow = getFlow(flowId);
         // 1. delete data of flow_running & flow_running_task
         // 2. update data of flow_history & flow_history_task
-        return null;
+        // TODO complete event listener.
+        eventPublisher.setFlowEvent(new DestroyFlowEvent(flowId));
+        flow.setState(FlowState.DESTROYED);
+        return flow;
     }
 
-    public Flow getFlow(String flowId) {
-        // TODO get from database.
-        return null;
+    /**
+     * Get history flow by id.
+     *
+     * @param flowId flow id
+     * @return history flow
+     */
+    public Flow getFlow(Long flowId) {
+        return getFlow(flowId, false);
+    }
+
+    /**
+     * Get running or history flow by id.
+     *
+     * @param flowId flow id
+     * @param isRunning if true is running
+     * @return running or history flow
+     */
+    public Flow getFlow(Long flowId, boolean isRunning) {
+        if (flowId == null) {
+            throw new IllegalArgumentException("flowId is empty.");
+        }
+        Flow flow = flowMapper.get(flowId, isRunning);
+
+        Objects.requireNonNull(flow, "The flow is not exists.");
+
+        return flow;
     }
 }
