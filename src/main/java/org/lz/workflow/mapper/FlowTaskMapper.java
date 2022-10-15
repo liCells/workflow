@@ -31,4 +31,20 @@ public interface FlowTaskMapper extends BaseMapper<RunningTask> {
     void saveHistoryTaskVariables(@Param("taskId") Long taskId, @Param("flowId") Long flowId, @Param("variables") Map<String, Object> variables);
 
     void deleteRunningVariables(Long taskId);
+
+    void deleteRunningTaskByFlowId(Long flowId);
+
+    void deleteRunningTaskVariablesByFlowId(Long flowId);
+
+    void deleteHistoryTaskByFlowId(Long flowId);
+
+    void deleteHistoryTaskVariablesByFlowId(Long flowId);
+
+    void deleteRunningByFlowId(Long flowId);
+
+    void deleteHistoryByFlowId(Long flowId);
+
+    void endHistoryTaskByFlowId(Long flowId);
+
+    void destroyFlow(Long flowId);
 }

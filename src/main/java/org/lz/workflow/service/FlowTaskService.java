@@ -9,9 +9,7 @@ import org.lz.workflow.domain.history.HistoryTask;
 import org.lz.workflow.domain.map.Line;
 import org.lz.workflow.domain.map.UserTaskNode;
 import org.lz.workflow.domain.running.RunningTask;
-import org.lz.workflow.event.StartFlowEvent;
 import org.lz.workflow.mapper.FlowTaskMapper;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,19 +33,6 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
     }
 
     @Transactional
-    @EventListener(StartFlowEvent.class)
-    public void startFlow(StartFlowEvent startFlowEvent) {
-        HashMap<String, Node> nodeHashMap = NodeMap.get(startFlowEvent.getFlowSymbol(), startFlowEvent.getFlowVersion());
-
-        Objects.requireNonNull(nodeHashMap, "Flow not exist.");
-
-        // Init running task.
-        final RunningTask task = new RunningTask(startFlowEvent);
-
-        complete(nodeHashMap, task, true);
-    }
-
-    @Transactional
     public void complete(String taskId) {
         complete(taskId, null);
     }
@@ -64,7 +49,7 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         complete(nodeHashMap, runningTask, false);
     }
 
-    private void complete(HashMap<String, Node> nodeHashMap, RunningTask runningTask, boolean isStart) {
+    protected void complete(HashMap<String, Node> nodeHashMap, RunningTask runningTask, boolean isStart) {
         // Get id.
         Long id = flowCommonService.getIdAndIncr(FlowCommonEnum.TASK_KEY);
 
@@ -118,6 +103,32 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         }
     }
 
+    protected void deleteRunning(Long flowId) {
+        if (flowId == null) {
+            throw new RuntimeException("flowId is empty.");
+        }
+        baseMapper.deleteRunningByFlowId(flowId);
+        baseMapper.deleteRunningTaskByFlowId(flowId);
+        baseMapper.deleteRunningTaskVariablesByFlowId(flowId);
+    }
+
+    protected void deleteHistory(Long flowId) {
+        if (flowId == null) {
+            throw new RuntimeException("flowId is empty.");
+        }
+        baseMapper.deleteHistoryByFlowId(flowId);
+        baseMapper.deleteHistoryTaskByFlowId(flowId);
+        baseMapper.deleteHistoryTaskVariablesByFlowId(flowId);
+    }
+
+    protected void destroyHistory(Long flowId) {
+        if (flowId == null) {
+            throw new RuntimeException("flowId is empty.");
+        }
+        baseMapper.destroyFlow(flowId);
+        baseMapper.endHistoryTaskByFlowId(flowId);
+    }
+
     private void saveTask(RunningTask runningTask) {
         HistoryTask historyTask = new HistoryTask(runningTask);
         saveHistoryTask(historyTask);
@@ -127,6 +138,9 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
     }
 
     private void saveTaskVariables(RunningTask runningTask) {
+        if (runningTask.getVariables() == null) {
+            return;
+        }
         saveRunningTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
         saveHistoryTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
     }

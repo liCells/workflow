@@ -86,7 +86,20 @@
     <update id="endFlow">
         update flow_history
         set end_time = now(),
-            state    = "FINISHED"
+            state    = 'FINISHED'
+        where id = #{flowId}
+    </update>
+
+    <update id="endHistoryTaskByFlowId">
+        update flow_history_task
+        set end_time = now()
+        where flow_id = #{flowId}
+    </update>
+
+    <update id="destroyFlow">
+        update flow_history
+        set end_time = now(),
+            state    = 'DESTROYED'
         where id = #{flowId}
     </update>
 
@@ -100,6 +113,42 @@
         delete
         from flow_running_variables
         where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteRunningTaskByFlowId">
+        delete
+        from flow_running_task
+        where flow_id = #{flowId}
+    </delete>
+
+    <delete id="deleteRunningTaskVariablesByFlowId">
+        delete
+        from flow_running_variables
+        where flow_id = #{flowId}
+    </delete>
+
+    <delete id="deleteHistoryTaskByFlowId">
+        delete
+        from flow_history_task
+        where flow_id = #{flowId}
+    </delete>
+
+    <delete id="deleteHistoryTaskVariablesByFlowId">
+        delete
+        from flow_history_variables
+        where flow_id = #{flowId}
+    </delete>
+
+    <delete id="deleteRunningByFlowId">
+        delete
+        from flow_running
+        where id = #{flowId}
+    </delete>
+
+    <delete id="deleteHistoryByFlowId">
+        delete
+        from flow_history
+        where id = #{flowId}
     </delete>
 
     <select id="selectRunningTaskCountByFlowId" resultType="java.lang.Integer">

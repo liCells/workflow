@@ -28,7 +28,9 @@ import java.util.Objects;
 public class FlowService extends FlowCommonService {
 
     private final FlowDesignService flowDesignService;
+
     private final EventPublisher eventPublisher;
+
     private final FlowMapper flowMapper;
 
     public FlowService(FlowDesignService flowDesignService, EventPublisher eventPublisher, FlowMapper flowMapper) {
@@ -143,7 +145,7 @@ public class FlowService extends FlowCommonService {
         }
 
         Flow flow = getFlow(flowId);
-        // 1. delete data of flow_running & flow_running_task
+        // 1. delete data of flow_running & flow_running_task & flow_running_variables
         // 2. update data of flow_history & flow_history_task
         // TODO complete event listener.
         eventPublisher.setFlowEvent(new DestroyFlowEvent(flowId));
