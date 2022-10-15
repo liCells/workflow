@@ -92,7 +92,7 @@ public class StartNode implements Node {
             this.symbol = StringUtil.getRandomString();
         }
         if (go == null || go.isEmpty()) {
-            throw new IllegalArgumentException("`go` is empty.");
+            throw new IllegalArgumentException(String.format("`go` is empty. Symbol is %s.", symbol));
         }
     }
 
@@ -122,7 +122,7 @@ public class StartNode implements Node {
     }
 
     public List<Node> getNextTaskNodes(HashMap<String, Node> nodeHashMap) {
-        if (go == null) throw new IllegalArgumentException("Next node is null.");
+        if (go == null) throw new IllegalArgumentException(String.format("Next node is null. Symbol is %s.", symbol));
         List<Node> nextNodes = new LinkedList<>();
         for (String nextNodeKey : go) {
             Node node = nodeHashMap.get(nextNodeKey);
@@ -133,7 +133,7 @@ public class StartNode implements Node {
             }
         }
         if (nextNodes.isEmpty()) {
-            throw new IllegalArgumentException("Not found the next task node.");
+            throw new IllegalArgumentException(String.format("Not found the next task node. Symbol is %s.", symbol));
         }
         return nextNodes;
     }
@@ -148,7 +148,7 @@ public class StartNode implements Node {
             nextNodes.add(nodeHashMap.get(nextNodeKey));
         }
         if (nextNodes.isEmpty()) {
-            throw new IllegalArgumentException("Not found the next node.");
+            throw new IllegalArgumentException(String.format("Not found the next node. Symbol is %s.", symbol));
         }
         return nextNodes;
     }

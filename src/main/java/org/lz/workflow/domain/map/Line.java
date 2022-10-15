@@ -117,7 +117,7 @@ public class Line implements Node {
     @Override
     public void inspect() {
         if (StringUtil.isEmpty(name)) {
-            throw new IllegalArgumentException("name is empty.");
+            this.name = "Line";
         }
         if (StringUtil.isEmpty(symbol)) {
             throw new IllegalArgumentException("symbol is empty.");
@@ -126,7 +126,7 @@ public class Line implements Node {
             // TODO inspect condition
         }
         if (go == null) {
-            throw new IllegalArgumentException(String.format("{%s}'s go is null.", name));
+            throw new IllegalArgumentException(String.format("%s's go is null. Symbol is %s", name, symbol));
         }
     }
 
@@ -134,7 +134,7 @@ public class Line implements Node {
     public List<Node> getNextNodes(HashMap<String, Node> nodeHashMap, boolean isTask) {
         Node node = nodeHashMap.get(go);
         if (node == null) {
-            throw new IllegalArgumentException(String.format("go {%s} is not exist.", go));
+            throw new IllegalArgumentException(String.format("go %s is not exist. Symbol is %s", go, symbol));
         }
         return Collections.singletonList(node);
     }

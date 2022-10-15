@@ -64,7 +64,6 @@ public class UserTaskNode implements TaskNode {
     }
 
     public void setDescription(String description) {
-
         this.description = description;
     }
 
@@ -115,7 +114,7 @@ public class UserTaskNode implements TaskNode {
             this.symbol = StringUtil.getRandomString();
         }
         if (go == null || go.isEmpty()) {
-            throw new IllegalArgumentException("go is empty.");
+            throw new IllegalArgumentException(String.format("go is empty. Symbol is %s.", symbol));
         }
     }
 
@@ -133,7 +132,7 @@ public class UserTaskNode implements TaskNode {
     }
 
     public List<Node> getNextTaskNodes(HashMap<String, Node> nodeHashMap) {
-        if (go == null) throw new IllegalArgumentException("Next node is null.");
+        if (go == null) throw new IllegalArgumentException(String.format("Next node is null. Symbol is %s.", symbol));
         List<Node> nextNodes = new LinkedList<>();
         for (String nextNodeKey : go) {
             Node node = nodeHashMap.get(nextNodeKey);
@@ -144,7 +143,7 @@ public class UserTaskNode implements TaskNode {
             }
         }
         if (nextNodes.isEmpty()) {
-            throw new IllegalArgumentException("Not found the next task node.");
+            throw new IllegalArgumentException(String.format("Not found the next task node. Symbol is %s.", symbol));
         }
         return nextNodes;
     }
