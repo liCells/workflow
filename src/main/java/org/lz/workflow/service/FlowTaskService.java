@@ -57,6 +57,7 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
     /**
      * Set variables.
      * If the flow is finished, an exception is thrown.
+     * TODO Same key override
      *
      * @param taskId task id
      * @param flowId flow id
@@ -71,14 +72,14 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
             try {
                 flowService.getFlow(flowId, true);
             } catch (NullPointerException e) {
-                throw new FlowFinishedException();
+                throw new FlowFinishedException("Flow is finished or not exist.");
             }
         }
         if (taskId != null) {
             if (!ignoreState) {
                 RunningTask task = getById(taskId);
                 if (task == null) {
-                    throw new TaskFinishedException();
+                    throw new TaskFinishedException("Task is finished or not exist.");
                 }
             }
             saveTaskVariables(taskId, flowId, taskVariables);

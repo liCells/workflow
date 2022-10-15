@@ -24,6 +24,7 @@ public class RunningTask {
     private Integer version;
     @TableField(exist = false)
     private Map<String, Object> variables;
+    @TableField(exist = false)
     private Map<String, Object> globalVariables;
 
     public Long getId() {
