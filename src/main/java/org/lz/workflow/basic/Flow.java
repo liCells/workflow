@@ -10,11 +10,11 @@ import java.util.Map;
  */
 public class Flow {
     private Long id;
-    private Integer flowDesignId;
     private Integer version;
     private String name;
     private String symbol;
     private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private FlowState state;
     private Map<String, Object> variables;
 
@@ -31,14 +31,6 @@ public class Flow {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getFlowDesignId() {
-        return flowDesignId;
-    }
-
-    public void setFlowDesignId(Integer flowDesignId) {
-        this.flowDesignId = flowDesignId;
     }
 
     public Integer getVersion() {
@@ -71,6 +63,14 @@ public class Flow {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public FlowState getState() {
