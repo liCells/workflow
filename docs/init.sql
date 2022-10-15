@@ -88,10 +88,10 @@ create table `flow_history_task`
 create table `flow_running_variables`
 (
     `id`          bigint primary key auto_increment comment 'id',
-    `task_id`     bigint      not null comment '任务id',
+    `task_id`     bigint   default null comment '任务id',
     `flow_id`     bigint      not null comment '流程id',
     `create_time` datetime default now() comment '创建时间',
-    `name`         varchar(32) not null comment '键',
+    `name`        varchar(32) not null comment '键',
     `val`         text        not null comment '值'
 ) engine = InnoDB
   default charset = utf8 comment '运行时任务变量';
@@ -99,10 +99,10 @@ create table `flow_running_variables`
 create table `flow_history_variables`
 (
     `id`          bigint primary key auto_increment comment 'id',
-    `task_id`     bigint      not null comment '任务id',
+    `task_id`     bigint   default null comment '任务id',
     `flow_id`     bigint      not null comment '流程id',
     `create_time` datetime default now() comment '创建时间',
-    `name`         varchar(32) not null comment '键',
+    `name`        varchar(32) not null comment '键',
     `val`         text        not null comment '值'
 ) engine = InnoDB
   default charset = utf8 comment '历史任务变量';
