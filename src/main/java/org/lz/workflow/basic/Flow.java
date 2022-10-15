@@ -18,6 +18,20 @@ public class Flow {
     private FlowState state;
     private Map<String, Object> variables;
 
+    public Flow() {
+    }
+
+    public Flow(Long id, Integer version, String name, String symbol, LocalDateTime startTime, LocalDateTime endTime, FlowState state, Map<String, Object> variables) {
+        this.id = id;
+        this.version = version;
+        this.name = name;
+        this.symbol = symbol;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.state = state;
+        this.variables = variables;
+    }
+
     public Flow(FlowDesign flowDesign, Map<String, Object> variables) {
         this.symbol = flowDesign.getSymbol();
         this.version = flowDesign.getVersion();
