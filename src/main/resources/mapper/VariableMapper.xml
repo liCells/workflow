@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.lz.workflow.mapper.VariableMapper">
+    <insert id="saveTaskVariables">
+        insert into
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        (
+        task_id,
+        flow_id,
+        name,
+        val)
+        values
+        <foreach collection="variables" index="key" item="val" separator=",">
+            (
+            #{taskId},
+            #{flowId},
+            #{key},
+            #{val})
+        </foreach>
+    </insert>
+
+    <update id="updateRunningTaskVariables">
+        update flow_running_variables
+        set val = case name
+        <foreach collection="variables" index="key" item="val">
+            when #{key} then #{val}
+        </foreach>
+        end
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="variables" index="key" item="val" open="(" close=")" separator=",">
+            #{key}
+        </foreach>
+    </update>
+
+    <update id="updateHistoryTaskVariables">
+        update flow_history_variables
+        set val = case name
+        <foreach collection="variables" index="key" item="val">
+            when #{key} then #{val}
+        </foreach>
+        end
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="variables" index="key" item="val" open="(" close=")" separator=",">
+            #{key}
+        </foreach>
+    </update>
+
+    <delete id="deleteVariablesByTaskId">
+        delete
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        where task_id = #{taskId}
+    </delete>
+
+    <delete id="deleteVariablesByFlowId">
+        delete
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        where flow_id = #{flowId}
+    </delete>
+
+    <select id="selectVariables" resultType="java.lang.String">
+        select name
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        where flow_id = #{flowId}
+        <choose>
+            <when test="taskId != null">
+                and task_id = #{taskId}
+            </when>
+            <otherwise>
+                and task_id is null
+            </otherwise>
+        </choose>
+        and name in
+        <foreach collection="names" item="name" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
+
+</mapper>

@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,10 +31,13 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
 
     private final FlowService flowService;
 
-    public FlowTaskService(FlowCommonService flowCommonService, LineService lineService, FlowService flowService) {
+    private final VariableService variableService;
+
+    public FlowTaskService(FlowCommonService flowCommonService, LineService lineService, FlowService flowService, VariableService variableService) {
         this.flowCommonService = flowCommonService;
         this.lineService = lineService;
         this.flowService = flowService;
+        this.variableService = variableService;
     }
 
     @Transactional
@@ -82,9 +84,9 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
                     throw new TaskFinishedException("Task is finished or not exist.");
                 }
             }
-            saveTaskVariables(taskId, flowId, taskVariables);
+            variableService.saveVariables(taskId, flowId, taskVariables);
         }
-        saveTaskVariables(null, flowId, globalVariables);
+        variableService.saveVariables(null, flowId, globalVariables);
     }
 
     /**
@@ -136,7 +138,7 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
             // If is running, so delete running task and variables, and end history task.
             baseMapper.deleteById(taskId);
             baseMapper.endHistoryTask(taskId);
-            baseMapper.deleteTaskVariables(taskId, true);
+            variableService.deleteVariablesByTaskId(taskId, true);
         }
 
         if (isEnd) {
@@ -153,18 +155,18 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         if (flowId == null) {
             throw new RuntimeException("flowId is empty.");
         }
-        baseMapper.deleteByFlowId(flowId, true);
+        baseMapper.deleteFlow(flowId, true);
         baseMapper.deleteTaskByFlowId(flowId, true);
-        baseMapper.deleteTaskVariablesByFlowId(flowId, true);
+        variableService.deleteVariablesByFlowId(flowId, true);
     }
 
     protected void deleteHistory(Long flowId) {
         if (flowId == null) {
             throw new RuntimeException("flowId is empty.");
         }
-        baseMapper.deleteByFlowId(flowId, false);
+        baseMapper.deleteFlow(flowId, false);
         baseMapper.deleteTaskByFlowId(flowId, false);
-        baseMapper.deleteTaskVariablesByFlowId(flowId, false);
+        variableService.deleteVariablesByFlowId(flowId, false);
     }
 
     protected void destroyHistory(Long flowId) {
@@ -180,19 +182,8 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         saveHistoryTask(historyTask);
         saveRunningTask(runningTask);
 
-        saveTaskVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
-        saveTaskVariables(null, runningTask.getFlowId(), runningTask.getGlobalVariables());
-    }
-
-    private void saveTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
-        if (variables == null || variables.isEmpty()) {
-            return;
-        }
-        if (flowId == null) {
-            throw new IllegalArgumentException("flowId is empty.");
-        }
-        saveRunningTaskVariables(taskId, flowId, variables);
-        saveHistoryTaskVariables(taskId, flowId, variables);
+        variableService.saveVariables(runningTask.getId(), runningTask.getFlowId(), runningTask.getVariables());
+        variableService.saveVariables(null, runningTask.getFlowId(), runningTask.getGlobalVariables());
     }
 
     private void saveRunningTask(RunningTask task) {
@@ -201,51 +192,5 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
 
     private void saveHistoryTask(HistoryTask task) {
         baseMapper.saveHistoryTask(task);
-    }
-
-    private void saveRunningTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
-        Map<String, Object> vars = new HashMap<>(variables);
-        // Get whether it exists
-        List<String> keys = baseMapper.selectTaskVariablesByTaskIdAndNames(taskId, flowId, vars.keySet(), true);
-        if (keys.isEmpty()) {
-            baseMapper.saveTaskVariables(taskId, flowId, vars, true);
-            return;
-        } else {
-            Map<String, Object> updateVars = new HashMap<>(vars);
-            for (String key : keys) {
-                if (!updateVars.containsKey(key)) {
-                    updateVars.remove(key);
-                }
-            }
-            baseMapper.updateRunningTaskVariables(taskId, flowId, updateVars);
-            keys.forEach(vars::remove);
-        }
-        if (vars.isEmpty()) {
-            return;
-        }
-        baseMapper.saveTaskVariables(taskId, flowId, vars, true);
-    }
-
-    private void saveHistoryTaskVariables(Long taskId, Long flowId, Map<String, Object> variables) {
-        Map<String, Object> vars = new HashMap<>(variables);
-        // Get whether it exists
-        List<String> keys = baseMapper.selectTaskVariablesByTaskIdAndNames(taskId, flowId, vars.keySet(), false);
-        if (keys.isEmpty()) {
-            baseMapper.saveTaskVariables(taskId, flowId, vars, false);
-            return;
-        } else {
-            Map<String, Object> updateVars = new HashMap<>(vars);
-            for (String key : keys) {
-                if (!updateVars.containsKey(key)) {
-                    updateVars.remove(key);
-                }
-            }
-            baseMapper.updateHistoryTaskVariables(taskId, flowId, updateVars);
-            keys.forEach(vars::remove);
-        }
-        if (vars.isEmpty()) {
-            return;
-        }
-        baseMapper.saveTaskVariables(taskId, flowId, vars, false);
     }
 }
