@@ -15,22 +15,29 @@
         task_id,
         flow_id,
         name,
+        type,
         val)
         values
-        <foreach collection="variables" index="key" item="val" separator=",">
+        <foreach collection="variables" item="item" separator=",">
             (
             #{taskId},
             #{flowId},
-            #{key},
-            #{val})
+            #{item.name},
+            #{item.type},
+            #{item.val})
         </foreach>
     </insert>
 
     <update id="updateRunningTaskVariables">
         update flow_running_variables
         set val = case name
-        <foreach collection="variables" index="key" item="val">
-            when #{key} then #{val}
+        <foreach collection="variables" item="item">
+            when #{item.name} then #{item.val}
+        </foreach>
+        end,
+        type = case name
+        <foreach collection="variables" item="item">
+            when #{item.name} then #{item.type}
         </foreach>
         end
         where flow_id = #{flowId}
@@ -43,16 +50,21 @@
             </otherwise>
         </choose>
         and name in
-        <foreach collection="variables" index="key" item="val" open="(" close=")" separator=",">
-            #{key}
+        <foreach collection="variables" item="name" open="(" close=")" separator=",">
+            #{item.name}
         </foreach>
     </update>
 
     <update id="updateHistoryTaskVariables">
         update flow_history_variables
         set val = case name
-        <foreach collection="variables" index="key" item="val">
-            when #{key} then #{val}
+        <foreach collection="variables" item="item">
+            when #{item.name} then #{item.val}
+        </foreach>
+        end,
+        type = case name
+        <foreach collection="variables" item="item">
+            when #{item.name} then #{item.type}
         </foreach>
         end
         where flow_id = #{flowId}
@@ -65,8 +77,8 @@
             </otherwise>
         </choose>
         and name in
-        <foreach collection="variables" index="key" item="val" open="(" close=")" separator=",">
-            #{key}
+        <foreach collection="variables" item="item" open="(" close=")" separator=",">
+            #{item.name}
         </foreach>
     </update>
 
@@ -124,4 +136,33 @@
         </foreach>
     </select>
 
+    <select id="getVariable" resultType="org.lz.workflow.domain.Variable">
+        select name, type, val
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        where task_id = #{taskId}
+        and name = #{name} limit 1
+    </select>
+
+    <select id="getGlobalVariable" resultType="org.lz.workflow.domain.Variable">
+        select name, type, val
+        from
+        <choose>
+            <when test="isRunning">
+                flow_running_variables
+            </when>
+            <otherwise>
+                flow_history_variables
+            </otherwise>
+        </choose>
+        where flow_id = #{flowId}
+        and name = #{name} limit 1
+    </select>
 </mapper>
