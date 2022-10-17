@@ -12,9 +12,9 @@ import org.lz.workflow.domain.running.RunningTask;
 @Mapper
 public interface FlowTaskMapper extends BaseMapper<RunningTask> {
 
-    void saveRunningTask(@Param("task") RunningTask task);
+    void saveRunningTask(RunningTask task);
 
-    void saveHistoryTask(@Param("task") HistoryTask task);
+    void saveHistoryTask(HistoryTask task);
 
     void endHistoryTask(@Param("taskId") Long taskId);
 
