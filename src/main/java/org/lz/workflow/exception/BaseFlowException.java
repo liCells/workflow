@@ -12,4 +12,8 @@ public class BaseFlowException extends RuntimeException {
     public BaseFlowException(String message) {
         super(message);
     }
+
+    public BaseFlowException(Throwable throwable) {
+        super(throwable);
+    }
 }
