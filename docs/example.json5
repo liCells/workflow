@@ -21,7 +21,7 @@
             type: "Line",
             symbol: "Line-symbol",
             defaultSelected: true,
-            condition: "${CURRENT_DATE} == 0000-00-00",
+            expression: "${CURRENT_DATE} == 0000-00-00",
             description: "Line description",
             go: "User-task-symbol"
         },
@@ -42,7 +42,7 @@
             type: "Line",
             symbol: "Line-symbol-two",
             defaultSelected: true,
-            condition: "${CURRENT_DATE} == 0000-00-00",
+            expression: "${CURRENT_DATE} == 0000-00-00",
             description: "Line description",
             go: "End-node-symbol"
         },

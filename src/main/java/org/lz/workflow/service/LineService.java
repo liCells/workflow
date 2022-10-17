@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 public class LineService {
 
     /**
-     * Parse the conditions on the line
-     * @return true if the condition is met
+     * Parse the expression on the line
+     * @return true if the expression is met
      */
     public boolean checkLine(Line line) {
-        // TODO parse condition
+        // TODO parse expression
         return true;
     }
 }

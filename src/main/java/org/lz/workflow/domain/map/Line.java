@@ -17,7 +17,7 @@ public class Line implements Node {
     private NodeType type;
     private String symbol;
     private boolean defaultSelected;
-    private String condition;
+    private String expression;
     private String description;
     private String go;
     private Integer version;
@@ -66,12 +66,12 @@ public class Line implements Node {
         this.defaultSelected = defaultSelected;
     }
 
-    public String getCondition() {
-        return condition;
+    public String getExpression() {
+        return expression;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
     @Override
@@ -100,13 +100,13 @@ public class Line implements Node {
         this.version = version;
     }
 
-    public Line(Integer id, String name, NodeType type, String symbol, boolean defaultSelected, String condition, String description, String go) {
+    public Line(Integer id, String name, NodeType type, String symbol, boolean defaultSelected, String expression, String description, String go) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.symbol = symbol;
         this.defaultSelected = defaultSelected;
-        this.condition = condition;
+        this.expression = expression;
         this.description = description;
         this.go = go;
     }
@@ -122,8 +122,8 @@ public class Line implements Node {
         if (StringUtil.isEmpty(symbol)) {
             throw new IllegalArgumentException("symbol is empty.");
         }
-        if (StringUtil.isNotEmpty(condition)) {
-            // TODO inspect condition
+        if (StringUtil.isNotEmpty(expression)) {
+            // TODO inspect expression
         }
         if (go == null) {
             throw new IllegalArgumentException(String.format("%s's go is null. Symbol is %s", name, symbol));
@@ -147,7 +147,7 @@ public class Line implements Node {
                 ", \"type\":\"" + type + '"' +
                 ", \"symbol\":\"" + symbol + '"' +
                 ", \"defaultSelected\":" + defaultSelected +
-                ", \"condition\":\"" + (condition == null ? "" : condition) + '"' +
+                ", \"expression\":\"" + (expression == null ? "" : expression) + '"' +
                 ", \"description\":\"" + (description == null ? "" : description) + '"' +
                 ", \"go\":" + go +
                 '}';
