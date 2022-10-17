@@ -104,18 +104,18 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
         // Get complete task id.
         Long taskId = isStart ? id : runningTask.getId();
 
-        // Set primary key.
-        runningTask.setId(id);
-        runningTask.setStartTime(LocalDateTime.now());
-
         boolean isEnd = false;
         // Get next task node, and save to task.
         for (Node nextLine : NodeMap.getNextNodes(nodeHashMap, runningTask.getNodeSymbol())) {
             Line line = (Line) nextLine;
-            if (lineService.checkLine(line)) {
+            if (lineService.checkLine(runningTask, line)) {
                 Node nextNode = NodeMap.getNextNodes(nodeHashMap, line.getSymbol()).get(0);
                 if (nextNode instanceof UserTaskNode) {
                     UserTaskNode userTaskNode = (UserTaskNode) nextNode;
+
+                    // Set primary key.
+                    runningTask.setId(id);
+                    runningTask.setStartTime(LocalDateTime.now());
                     runningTask.setName(userTaskNode.getName());
                     runningTask.setNodeSymbol(userTaskNode.getSymbol());
                     runningTask.setType(userTaskNode.getType().getName());
@@ -123,12 +123,12 @@ public class FlowTaskService extends ServiceImpl<FlowTaskMapper, RunningTask> {
                     runningTask.setExecutor(userTaskNode.getExecutor());
                     // Save new task.
                     saveTask(runningTask);
-                    break;
+                    continue;
                 }
                 if (nextNode.getType() == NodeType.END) {
                     // Mark flow the end.
                     isEnd = true;
-                    break;
+                    continue;
                 }
                 // TODO other node type
             }
